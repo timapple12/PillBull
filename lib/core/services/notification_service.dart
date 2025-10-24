@@ -13,31 +13,54 @@ class NotificationService {
   final AppDatabase _database;
 
   Future<void> initialize() async {
-    tz.initializeTimeZones();
-    
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@android:drawable/sym_def_app_icon');
-    
-    const DarwinInitializationSettings iosSettings =
-    DarwinInitializationSettings();
-    
-    const InitializationSettings settings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
-    
-    await _notifications.initialize(
-      settings,
-      onDidReceiveNotificationResponse: _onNotificationTapped,
-    );
-    
-    // Request notification permissions for Android 13+
-    await _notifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-
-    print("Notification initialized");
+    try {
+      // Initialize timezones with local location
+      tz.initializeTimeZones();
+      tz.setLocalLocation(tz.getLocation('Europe/Kiev')); // Ukraine timezone
+      
+      const AndroidInitializationSettings androidSettings =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+      
+      const DarwinInitializationSettings iosSettings =
+          DarwinInitializationSettings(
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true,
+          );
+      
+      const InitializationSettings settings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
+      
+      final initialized = await _notifications.initialize(
+        settings,
+        onDidReceiveNotificationResponse: _onNotificationTapped,
+      );
+      
+      if (initialized == true) {
+        // Request notification permissions for Android 13+
+        final androidPlugin = _notifications.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+        
+        if (androidPlugin != null) {
+          final granted = await androidPlugin.requestNotificationsPermission();
+          print('📱 Notification permission: ${granted == true ? "GRANTED" : "DENIED"}');
+          
+          // Request exact alarm permission for Android 12+
+          final exactAlarmGranted = await androidPlugin.requestExactAlarmsPermission();
+          print('⏰ Exact alarm permission: ${exactAlarmGranted == true ? "GRANTED" : "DENIED"}');
+        }
+        
+        print('✅ Notifications initialized successfully');
+      } else {
+        print('⚠️ Notifications initialization returned false');
+      }
+    } catch (e, stackTrace) {
+      print('❌ Failed to initialize notifications: $e');
+      print('StackTrace: $stackTrace');
+      rethrow;
+    }
   }
 
   void _onNotificationTapped(NotificationResponse response) {
@@ -46,40 +69,40 @@ class NotificationService {
     print('Notification tapped: ${response.payload}');
   }
 
-  /// Schedule notifications for a medication based on its schedule
   Future<void> scheduleIntakeNotifications({
     required Medication medication,
     required Schedule schedule,
   }) async {
+    print('📅 Scheduling notifications for: ${medication.name}');
+    
     if (!schedule.isActive) {
+      print('⏸️ Schedule is not active, skipping');
       return;
     }
     
-    // Cancel existing notifications for this medication
     await cancelNotificationsForMedication(medication.id);
     
     final now = DateTime.now();
     final endDate = schedule.endDate;
-    
-    // Calculate frequency increment in days
-    final int frequencyInDays = _calculateFrequencyInDays(
+    final frequencyInDays = _calculateFrequencyInDays(
       schedule.frequencyValue,
       schedule.frequencyUnit,
     );
     
-    // Calculate all notification times within the schedule
+    print('📊 Frequency: every $frequencyInDays days');
+    print('📆 Range: ${schedule.startDate} → $endDate');
+    
+    int scheduledCount = 0;
+    
     for (final pattern in schedule.patterns) {
       DateTime currentDate = schedule.startDate;
       
-      // Iterate through each day in the schedule based on frequency
       while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
-        // Skip past dates
         if (currentDate.isBefore(DateTime(now.year, now.month, now.day))) {
           currentDate = currentDate.add(Duration(days: frequencyInDays));
           continue;
         }
         
-        // Schedule notifications for each time slot
         for (final timeSlot in pattern.dailySlots) {
           final scheduledTime = DateTime(
             currentDate.year,
@@ -89,45 +112,39 @@ class NotificationService {
             timeSlot.minute,
           );
           
-          // Only schedule future notifications
           if (scheduledTime.isAfter(now)) {
-            // Create intake record if it doesn't exist
-            await _createIntakeRecordIfNeeded(
-              medication.id,
-              scheduledTime,
-            );
+            await _createIntakeRecordIfNeeded(medication.id, scheduledTime);
             
-            // Schedule reminder notification (15 minutes before)
             await _scheduleReminderNotification(
               medication: medication,
               scheduledTime: scheduledTime,
               pillsCount: pattern.pillsPerSlot,
             );
             
-            // Schedule main notification
             await _scheduleMainNotification(
               medication: medication,
               scheduledTime: scheduledTime,
               pillsCount: pattern.pillsPerSlot,
             );
             
-            // Schedule follow-up notification (30 minutes after)
             await _scheduleFollowUpNotification(
               medication: medication,
               scheduledTime: scheduledTime,
             );
+            
+            scheduledCount++;
           }
         }
         
-        // Increment by frequency (e.g., every 2 days, every week, etc.)
         currentDate = currentDate.add(Duration(days: frequencyInDays));
         
-        // Limit to 30 days in advance to avoid too many scheduled notifications
         if (currentDate.isAfter(now.add(const Duration(days: 30)))) {
           break;
         }
       }
     }
+    
+    print('✅ Scheduled $scheduledCount notification sets for ${medication.name}');
   }
 
   /// Calculate frequency in days based on value and unit
@@ -169,7 +186,6 @@ class NotificationService {
     }
   }
 
-  /// Schedule reminder notification 15 minutes before
   Future<void> _scheduleReminderNotification({
     required Medication medication,
     required DateTime scheduledTime,
@@ -178,8 +194,6 @@ class NotificationService {
     final reminderTime = scheduledTime.subtract(const Duration(minutes: 15));
     
     if (reminderTime.isBefore(DateTime.now())) return;
-    
-    // Check quiet hours
     if (_isQuietHours(reminderTime)) return;
     
     final notificationId = _getNotificationId(medication.id, scheduledTime, 'reminder');
@@ -188,9 +202,9 @@ class NotificationService {
       'medication_reminders',
       'Medication Reminders',
       channelDescription: 'Reminders for medication intake',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
-      icon: '@android:drawable/sym_def_app_icon',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
     );
     
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
@@ -204,28 +218,30 @@ class NotificationService {
       iOS: iosDetails,
     );
     
-    await _notifications.zonedSchedule(
-      notificationId,
-      '⏰ Скоро час ліків',
-      '${medication.name} через 15 хвилин ($pillsCount табл.)',
-      tz.TZDateTime.from(reminderTime, tz.local),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: 'reminder_${medication.id}_${scheduledTime.millisecondsSinceEpoch}',
-    );
+    try {
+      await _notifications.zonedSchedule(
+        notificationId,
+        '⏰ Скоро час ліків',
+        '${medication.name} через 15 хвилин ($pillsCount табл.)',
+        tz.TZDateTime.from(reminderTime, tz.local),
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: 'reminder_${medication.id}_${scheduledTime.millisecondsSinceEpoch}',
+      );
+      print('  ⏰ Reminder scheduled for: $reminderTime (ID: $notificationId)');
+    } catch (e) {
+      print('  ❌ Failed to schedule reminder: $e');
+    }
   }
 
-  /// Schedule main notification at scheduled time
   Future<void> _scheduleMainNotification({
     required Medication medication,
     required DateTime scheduledTime,
     required int pillsCount,
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
-    
-    // Check quiet hours
     if (_isQuietHours(scheduledTime)) return;
     
     final notificationId = _getNotificationId(medication.id, scheduledTime, 'main');
@@ -234,9 +250,11 @@ class NotificationService {
       'medication_reminders',
       'Medication Reminders',
       channelDescription: 'Reminders for medication intake',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@android:drawable/sym_def_app_icon',
+      importance: Importance.max,
+      priority: Priority.max,
+      icon: '@mipmap/ic_launcher',
+      playSound: true,
+      enableVibration: true,
     );
     
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
@@ -250,20 +268,24 @@ class NotificationService {
       iOS: iosDetails,
     );
     
-    await _notifications.zonedSchedule(
-      notificationId,
-      '💊 Час прийняти ліки!',
-      '${medication.name} - $pillsCount таблеток',
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: 'main_${medication.id}_${scheduledTime.millisecondsSinceEpoch}',
-    );
+    try {
+      await _notifications.zonedSchedule(
+        notificationId,
+        '💊 Час прийняти ліки!',
+        '${medication.name} - $pillsCount таблеток',
+        tz.TZDateTime.from(scheduledTime, tz.local),
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: 'main_${medication.id}_${scheduledTime.millisecondsSinceEpoch}',
+      );
+      print('  💊 Main notification scheduled for: $scheduledTime (ID: $notificationId)');
+    } catch (e) {
+      print('  ❌ Failed to schedule main notification: $e');
+    }
   }
 
-  /// Schedule follow-up notification 30 minutes after
   Future<void> _scheduleFollowUpNotification({
     required Medication medication,
     required DateTime scheduledTime,
@@ -271,8 +293,6 @@ class NotificationService {
     final followUpTime = scheduledTime.add(const Duration(minutes: 30));
     
     if (followUpTime.isBefore(DateTime.now())) return;
-    
-    // Check quiet hours
     if (_isQuietHours(followUpTime)) return;
     
     final notificationId = _getNotificationId(medication.id, scheduledTime, 'followup');
@@ -281,9 +301,9 @@ class NotificationService {
       'medication_reminders',
       'Medication Reminders',
       channelDescription: 'Reminders for medication intake',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
-      icon: '@android:drawable/sym_def_app_icon',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
     );
     
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
@@ -297,17 +317,22 @@ class NotificationService {
       iOS: iosDetails,
     );
     
-    await _notifications.zonedSchedule(
-      notificationId,
-      '🔔 Нагадування',
-      'Ви прийняли ${medication.name}?',
-      tz.TZDateTime.from(followUpTime, tz.local),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: 'followup_${medication.id}_${scheduledTime.millisecondsSinceEpoch}',
-    );
+    try {
+      await _notifications.zonedSchedule(
+        notificationId,
+        '🔔 Нагадування',
+        'Ви прийняли ${medication.name}?',
+        tz.TZDateTime.from(followUpTime, tz.local),
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: 'followup_${medication.id}_${scheduledTime.millisecondsSinceEpoch}',
+      );
+      print('  🔔 Follow-up scheduled for: $followUpTime (ID: $notificationId)');
+    } catch (e) {
+      print('  ❌ Failed to schedule follow-up: $e');
+    }
   }
 
   /// Cancel all notifications for a specific medication
@@ -361,7 +386,6 @@ class NotificationService {
     return hour >= 22 || hour < 7;
   }
 
-  /// Show immediate notification (for testing)
   Future<void> showImmediateNotification({
     required String title,
     required String body,
@@ -371,9 +395,11 @@ class NotificationService {
       'medication_reminders',
       'Medication Reminders',
       channelDescription: 'Reminders for medication intake',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@android:drawable/sym_def_app_icon',
+      importance: Importance.max,
+      priority: Priority.max,
+      icon: '@mipmap/ic_launcher',
+      playSound: true,
+      enableVibration: true,
     );
     
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
@@ -387,12 +413,41 @@ class NotificationService {
       iOS: iosDetails,
     );
     
-    await _notifications.show(
-      DateTime.now().millisecondsSinceEpoch % 100000,
-      title,
-      body,
-      details,
-      payload: payload,
-    );
+    try {
+      await _notifications.show(
+        DateTime.now().millisecondsSinceEpoch % 100000,
+        title,
+        body,
+        details,
+        payload: payload,
+      );
+      print('✅ Test notification sent: $title');
+    } catch (e) {
+      print('❌ Failed to send test notification: $e');
+    }
+  }
+  
+  Future<List<Map<String, dynamic>>> getPendingNotifications() async {
+    final pending = await _notifications.pendingNotificationRequests();
+    print('📋 Total pending notifications: ${pending.length}');
+    
+    return pending.map((n) => {
+      'id': n.id,
+      'title': n.title,
+      'body': n.body,
+      'payload': n.payload,
+    }).toList();
+  }
+  
+  Future<void> printAllPendingNotifications() async {
+    final pending = await _notifications.pendingNotificationRequests();
+    print('📋 Pending notifications (${pending.length}):');
+    
+    for (final notification in pending) {
+      print('  - ID: ${notification.id}');
+      print('    Title: ${notification.title}');
+      print('    Body: ${notification.body}');
+      print('    Payload: ${notification.payload}');
+    }
   }
 }

@@ -10,6 +10,7 @@ import '../../../../core/constants/app_contacts.dart';
 import '../../../../core/services/data_service.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../../../shared/providers/locale_provider.dart';
+import '../../../../shared/providers/notification_provider.dart';
 import '../../../../shared/providers/providers.dart';
 import '../../../../shared/providers/theme_provider.dart';
 import '../widgets/settings_tile.dart';
@@ -180,6 +181,43 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 },
               ),
             ],
+            const Divider(height: 32),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.notifications_active),
+              label: const Text('🧪 Тестова нотифікація'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+              onPressed: () async {
+                final notificationService = ref.read(notificationServiceProvider);
+                await notificationService.showImmediateNotification(
+                  title: '🧪 Тест',
+                  body: 'Нотифікації працюють правильно!',
+                );
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('✅ Тестова нотифікація відправлена')),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.list),
+              label: const Text('📋 Показати заплановані'),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+              onPressed: () async {
+                final notificationService = ref.read(notificationServiceProvider);
+                await notificationService.printAllPendingNotifications();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('📋 Перевір логи в консолі')),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),

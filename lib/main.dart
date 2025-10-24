@@ -12,10 +12,21 @@ import 'shared/providers/theme_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Pre-load SharedPreferences for theme
   final container = ProviderContainer();
+  
+  // Pre-load SharedPreferences for theme
   final themeNotifier = container.read(themeProvider.notifier);
   await themeNotifier.loadThemeMode();
+  
+  // Initialize notification service immediately at app start
+  try {
+    final notificationService = container.read(notificationServiceProvider);
+    await notificationService.initialize();
+    debugPrint('✅ Notifications initialized successfully');
+  } catch (e, stackTrace) {
+    debugPrint('❌ Failed to initialize notifications: $e');
+    debugPrint('StackTrace: $stackTrace');
+  }
   
   runApp(UncontrolledProviderScope(
     container: container,
@@ -30,13 +41,6 @@ class PillBullApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeProvider);
-    
-    // Initialize notification service
-    ref.listen(notificationServiceProvider, (previous, next) {
-      next.initialize().catchError((error) {
-        debugPrint('Failed to initialize NotificationService: $error');
-      });
-    });
     
     return MaterialApp(
       title: AppConstants.appName,
