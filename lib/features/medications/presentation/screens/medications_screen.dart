@@ -119,16 +119,23 @@ class MedicationsScreen extends ConsumerWidget {
             
             // Schedule notifications
             try {
+              debugPrint('[CREATE] Attempting to schedule notifications for: ${medication.name}');
               final notificationService = ref.read(notificationServiceProvider);
               final scheduleEntity = await scheduleRepository.getScheduleById(schedule.id);
-              if (scheduleEntity != null) {
+              
+              if (scheduleEntity == null) {
+                debugPrint('[CREATE] Schedule entity is NULL for ID: ${schedule.id}');
+              } else {
+                debugPrint('[CREATE] Schedule entity found, calling scheduleIntakeNotifications...');
                 await notificationService.scheduleIntakeNotifications(
                   medication: medication.toEntity(),
                   schedule: scheduleEntity,
                 );
+                debugPrint('[CREATE] Notifications scheduled successfully');
               }
-            } catch (e) {
-              debugPrint('Failed to schedule notifications: $e');
+            } catch (e, stackTrace) {
+              debugPrint('[CREATE] Failed to schedule notifications: $e');
+              debugPrint('StackTrace: $stackTrace');
             }
           }
           
@@ -181,16 +188,23 @@ class MedicationsScreen extends ConsumerWidget {
               
               // Reschedule notifications
               try {
+                debugPrint('[UPDATE] Attempting to reschedule notifications for: ${updatedMedication.name}');
                 final notificationService = ref.read(notificationServiceProvider);
                 final scheduleEntity = await scheduleRepository.getScheduleById(updatedSchedule.id);
-                if (scheduleEntity != null) {
+                
+                if (scheduleEntity == null) {
+                  debugPrint('[UPDATE] Schedule entity is NULL for ID: ${updatedSchedule.id}');
+                } else {
+                  debugPrint('[UPDATE] Schedule entity found, calling scheduleIntakeNotifications...');
                   await notificationService.scheduleIntakeNotifications(
                     medication: updatedMedication.toEntity(),
                     schedule: scheduleEntity,
                   );
+                  debugPrint('[UPDATE] Notifications rescheduled successfully');
                 }
-              } catch (e) {
-                debugPrint('Failed to reschedule notifications: $e');
+              } catch (e, stackTrace) {
+                debugPrint('[UPDATE] Failed to reschedule notifications: $e');
+                debugPrint('StackTrace: $stackTrace');
               }
             } else {
               final newSchedule = MedicationScheduleDto(
@@ -215,16 +229,23 @@ class MedicationsScreen extends ConsumerWidget {
               
               // Schedule notifications
               try {
+                debugPrint('[UPDATE-NEW] Attempting to schedule notifications for: ${updatedMedication.name}');
                 final notificationService = ref.read(notificationServiceProvider);
                 final scheduleEntity = await scheduleRepository.getScheduleById(newSchedule.id);
-                if (scheduleEntity != null) {
+                
+                if (scheduleEntity == null) {
+                  debugPrint('[UPDATE-NEW] Schedule entity is NULL for ID: ${newSchedule.id}');
+                } else {
+                  debugPrint('[UPDATE-NEW] Schedule entity found, calling scheduleIntakeNotifications...');
                   await notificationService.scheduleIntakeNotifications(
                     medication: updatedMedication.toEntity(),
                     schedule: scheduleEntity,
                   );
+                  debugPrint('[UPDATE-NEW] Notifications scheduled successfully');
                 }
-              } catch (e) {
-                debugPrint('Failed to schedule notifications: $e');
+              } catch (e, stackTrace) {
+                debugPrint('[UPDATE-NEW] Failed to schedule notifications: $e');
+                debugPrint('StackTrace: $stackTrace');
               }
             }
           }

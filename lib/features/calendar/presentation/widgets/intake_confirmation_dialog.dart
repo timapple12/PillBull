@@ -11,9 +11,11 @@ class IntakeConfirmationDialog extends StatefulWidget {
     required this.onTaken,
     required this.onSkipped,
     required this.onPostponed,
+    required this.onMissed,
   });
   final IntakeRecordDto record;
   final VoidCallback onTaken;
+  final VoidCallback onMissed;
   final Function(String reason) onSkipped;
   final Function(DateTime newTime, AppLocalizations l10n) onPostponed;
 
@@ -61,6 +63,13 @@ class _IntakeConfirmationDialogState extends State<IntakeConfirmationDialog> {
             Navigator.of(context).pop();
           },
           child: Text(l10n.taken),
+        ),
+        FilledButton(
+          onPressed: () {
+            widget.onMissed();
+            Navigator.of(context).pop();
+          },
+          child: Text(l10n.missed),
         ),
         TextButton(
           onPressed: () => _showPostponeDialog(l10n),

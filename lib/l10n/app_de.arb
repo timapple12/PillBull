@@ -87,6 +87,8 @@
   "testNotificationSent": "Testbenachrichtigung gesendet",
   "showScheduled": "Geplante anzeigen",
   "checkLogsInConsole": "Protokolle in der Konsole überprüfen",
+  "rescheduleAll": "Alle Benachrichtigungen neu planen",
+  "notificationsRescheduled": "Alle Benachrichtigungen neu geplant",
   "appearance": "Erscheinungsbild",
   "darkTheme": "Dunkles Design",
   "useDarkTheme": "Dunkles Design verwenden",

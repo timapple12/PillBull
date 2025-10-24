@@ -104,7 +104,7 @@ class CalendarCell extends StatelessWidget {
         );
       case IntakeStatusDto.scheduled:
         return const Icon(
-          Icons.radio_button_unchecked,
+          Icons.access_time_filled,
           color: AppConstants.primaryColor,
           size: 20,
         );

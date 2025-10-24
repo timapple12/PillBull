@@ -366,6 +366,14 @@
   "@checkLogsInConsole": {
     "description": "Check logs message"
   },
+  "rescheduleAll": "Reschedule All Notifications",
+  "@rescheduleAll": {
+    "description": "Reschedule all notifications button"
+  },
+  "notificationsRescheduled": "All notifications rescheduled",
+  "@notificationsRescheduled": {
+    "description": "Notifications rescheduled message"
+  },
   "appearance": "Appearance",
   "@appearance": {
     "description": "Appearance section title"
@@ -959,5 +967,9 @@
   "medicationSkipped": "Medication skipped",
   "@medicationSkipped": {
     "description": "Medication skipped message"
+  }
+  "intakeMissed": "Intake missed",
+  "@intakeMissed": {
+    "description": "Intake missed message"
   }
 }

@@ -126,6 +126,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         onTaken: () => _markAsTaken(record, l10n),
         onSkipped: (reason) => _markAsSkipped(record, reason, l10n),
         onPostponed: (newTime, l10n) => _postponeIntake(record, newTime, l10n),
+        onMissed: () => _markAsMissed(record, l10n),
       ),
     );
   }
@@ -283,6 +284,38 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               debugPrint('StackTrace: $stackTrace');
             }
           },
+          onMissed: () async {
+            try {
+              debugPrint('onMissed called for ${medication.name}');
+
+              final newRecord = IntakeRecord(
+                id: const Uuid().v4(),
+                medicationId: medication.id,
+                scheduledTime: scheduledTime,
+                actualTime: null,
+                status: IntakeStatusDto.missed,
+                skipReason: null,
+                pillsCount: 1,
+                createdAt: DateTime.now(),
+              );
+
+              final repository = ref.read(intakeRecordRepositoryProvider);
+              await repository.createRecord(newRecord);
+
+              debugPrint('Missed record created');
+
+              ref.invalidate(intakeRecordsForDateRangeProvider);
+
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.intakeMissed)),
+                );
+              }
+            } catch (e, stackTrace) {
+              debugPrint('Error in onMissed: $e');
+              debugPrint('StackTrace: $stackTrace');
+            }
+          },
         ),
       );
     }
@@ -322,16 +355,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             
             // Schedule notifications
             try {
+              debugPrint('Attempting to schedule notifications for: ${medication.name}');
               final notificationService = ref.read(notificationServiceProvider);
               final scheduleEntity = await scheduleRepository.getScheduleById(schedule.id);
-              if (scheduleEntity != null) {
+              
+              if (scheduleEntity == null) {
+                debugPrint('Schedule entity is NULL for ID: ${schedule.id}');
+              } else {
+                debugPrint('Schedule entity found, calling scheduleIntakeNotifications...');
                 await notificationService.scheduleIntakeNotifications(
                   medication: medication.toEntity(),
                   schedule: scheduleEntity,
                 );
+                debugPrint('Notifications scheduled successfully');
               }
-            } catch (e) {
+            } catch (e, stackTrace) {
               debugPrint('Failed to schedule notifications: $e');
+              debugPrint('StackTrace: $stackTrace');
             }
           }
           
@@ -382,6 +422,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.intakeSkipped)),
+      );
+    }
+  }
+
+  Future<void> _markAsMissed(IntakeRecord record, AppLocalizations l10n) async {
+    final updatedRecord = record.copyWith(
+      status: IntakeStatusDto.missed,
+    );
+
+    final repository = ref.read(intakeRecordRepositoryProvider);
+    await repository.updateRecord(updatedRecord);
+
+    ref.invalidate(intakeRecordsForDateRangeProvider);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.intakeMissed)),
       );
     }
   }

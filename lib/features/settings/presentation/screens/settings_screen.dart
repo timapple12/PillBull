@@ -24,6 +24,9 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  // Debug mode - set to false for production
+  static const bool isDebugEnabled = true;
+  
   bool _notificationsEnabled = true;
   bool _quietHoursEnabled = true;
   TimeOfDay _quietHoursStart = const TimeOfDay(hour: 22, minute: 0);
@@ -221,43 +224,62 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 },
               ),
             ],
-            const Divider(height: 32),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.notifications_active),
-              label: Text('🧪 ${l10n.testNotification}'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 48),
-              ),
-              onPressed: () async {
-                final notificationService = ref.read(notificationServiceProvider);
-                await notificationService.showImmediateNotification(
-                  title: '🧪 ${l10n.test}',
-                  body: l10n.notificationsWorkingCorrectly,
-                );
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('✅ ${l10n.testNotificationSent}')),
+            if (isDebugEnabled) ...[
+              const Divider(height: 32),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.notifications_active),
+                label: Text('🧪 ${l10n.testNotification}'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: () async {
+                  final notificationService = ref.read(notificationServiceProvider);
+                  await notificationService.showImmediateNotification(
+                    title: '🧪 ${l10n.test}',
+                    body: l10n.notificationsWorkingCorrectly,
                   );
-                }
-              },
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.list),
-              label: Text('📋 ${l10n.showScheduled}'),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 48),
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('✅ ${l10n.testNotificationSent}')),
+                    );
+                  }
+                },
               ),
-              onPressed: () async {
-                final notificationService = ref.read(notificationServiceProvider);
-                await notificationService.printAllPendingNotifications();
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('📋 ${l10n.checkLogsInConsole}')),
-                  );
-                }
-              },
-            ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.refresh),
+                label: Text('🔄 ${l10n.rescheduleAll}'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: () async {
+                  final notificationService = ref.read(notificationServiceProvider);
+                  await notificationService.rescheduleAllNotifications();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('✅ ${l10n.notificationsRescheduled}')),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.list),
+                label: Text('📋 ${l10n.showScheduled}'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: () async {
+                  final notificationService = ref.read(notificationServiceProvider);
+                  await notificationService.printAllPendingNotifications();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('📋 ${l10n.checkLogsInConsole}')),
+                    );
+                  }
+                },
+              ),
+            ],
           ],
         ),
       ),

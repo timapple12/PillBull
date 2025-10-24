@@ -622,6 +622,18 @@ abstract class AppLocalizations {
   /// **'Check logs in console'**
   String get checkLogsInConsole;
 
+  /// Reschedule all notifications button
+  ///
+  /// In en, this message translates to:
+  /// **'Reschedule All Notifications'**
+  String get rescheduleAll;
+
+  /// Notifications rescheduled message
+  ///
+  /// In en, this message translates to:
+  /// **'All notifications rescheduled'**
+  String get notificationsRescheduled;
+
   /// Appearance section title
   ///
   /// In en, this message translates to:

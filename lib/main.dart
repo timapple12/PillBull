@@ -23,8 +23,13 @@ void main() async {
     final notificationService = container.read(notificationServiceProvider);
     await notificationService.initialize();
     debugPrint('✅ Notifications initialized successfully');
+    
+    // Initialize notification scheduler service
+    final notificationSchedulerService = container.read(notificationSchedulerServiceProvider);
+    await notificationSchedulerService.initialize();
+    debugPrint('✅ NotificationSchedulerService initialized successfully');
   } catch (e, stackTrace) {
-    debugPrint('❌ Failed to initialize notifications: $e');
+    debugPrint('❌ Failed to initialize services: $e');
     debugPrint('StackTrace: $stackTrace');
   }
   
@@ -34,11 +39,42 @@ void main() async {
   ));
 }
 
-class PillBullApp extends ConsumerWidget {
+class PillBullApp extends ConsumerStatefulWidget {
   const PillBullApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PillBullApp> createState() => _PillBullAppState();
+}
+
+class _PillBullAppState extends ConsumerState<PillBullApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final schedulerService = ref.read(notificationSchedulerServiceProvider);
+    
+    switch (state) {
+      case AppLifecycleState.resumed:
+        schedulerService.onAppResumed();
+      case AppLifecycleState.paused:
+        schedulerService.onAppPaused();
+      default:
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final locale = ref.watch(localeProvider);
     final themeMode = ref.watch(themeProvider);
     

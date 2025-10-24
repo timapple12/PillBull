@@ -281,6 +281,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get checkLogsInConsole => 'Protokolle in der Konsole überprüfen';
 
   @override
+  String get rescheduleAll => 'Alle Benachrichtigungen neu planen';
+
+  @override
+  String get notificationsRescheduled => 'Alle Benachrichtigungen neu geplant';
+
+  @override
   String get appearance => 'Erscheinungsbild';
 
   @override

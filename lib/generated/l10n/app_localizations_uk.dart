@@ -247,7 +247,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get quietHours => 'Тихий час';
+  String get quietHours => 'Тиха година';
 
   @override
   String get doNotDisturbAtNight => 'Не турбувати вночі';
@@ -275,6 +275,12 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get checkLogsInConsole => 'Перевір логи в консолі';
+
+  @override
+  String get rescheduleAll => 'Перепланувати всі нотифікації';
+
+  @override
+  String get notificationsRescheduled => 'Всі нотифікації переплановано';
 
   @override
   String get appearance => 'Зовнішній вигляд';

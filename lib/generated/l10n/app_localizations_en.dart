@@ -278,6 +278,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkLogsInConsole => 'Check logs in console';
 
   @override
+  String get rescheduleAll => 'Reschedule All Notifications';
+
+  @override
+  String get notificationsRescheduled => 'All notifications rescheduled';
+
+  @override
   String get appearance => 'Appearance';
 
   @override

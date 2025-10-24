@@ -79,7 +79,7 @@
   "reminderBefore": "Нагадування за",
   "minutesBeforeIntake": "{minutes} хвилин до прийому",
   "minutesShort": "{minutes} хв",
-  "quietHours": "Тихий час",
+  "quietHours": "Тиха година",
   "doNotDisturbAtNight": "Не турбувати вночі",
   "quietHoursStart": "Початок тихого часу",
   "quietHoursEnd": "Кінець тихого часу",
@@ -89,6 +89,8 @@
   "testNotificationSent": "Тестова нотифікація відправлена",
   "showScheduled": "Показати заплановані",
   "checkLogsInConsole": "Перевір логи в консолі",
+  "rescheduleAll": "Перепланувати всі нотифікації",
+  "notificationsRescheduled": "Всі нотифікації переплановано",
   "appearance": "Зовнішній вигляд",
   "darkTheme": "Темна тема",
   "useDarkTheme": "Використовувати темну тему",
@@ -232,4 +234,5 @@
   "noScheduleForMedication": "Не знайдено розклад для цього медикаменту",
   "medicationSkipped": "Медикамент пропущено",
   "intakePostponed": "Прийом відкладено"
+  "intakeMissed": "Прийом пропущено",
 }
