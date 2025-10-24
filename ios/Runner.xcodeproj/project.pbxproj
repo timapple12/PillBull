@@ -1,0 +1,28 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+		13B07F961A680F5B00A75B9A = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A;
+			buildPhases = (
+				FD10A7F022414F080027D42C,
+				13B07F871A680F5B00A75B9A,
+				13B07F8C1A680F5B00A75B9A,
+				13B07F8E1A680F5B00A75B9A,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Runner;
+			productName = Runner;
+			productReference = 13B07F961A680F5B00A75B9A;
+			productType = "com.apple.product-type.application";
+		};
+	};
+	rootObject = 13B07F961A680F5B00A75B9A;
+}

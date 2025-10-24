@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PillBull</string>
+    <string name="medication_reminder_title">Час прийняти ліки</string>
+    <string name="medication_reminder_body">Не забудьте прийняти ліки</string>
+    <string name="notification_channel_name">Medication Reminders</string>
+    <string name="notification_channel_description">Reminders for medication intake</string>
+</resources>

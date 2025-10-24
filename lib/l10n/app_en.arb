@@ -1,0 +1,865 @@
+{
+  "@@locale": "en",
+  "appTitle": "PillBull",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "medicationTracking": "Medication Tracking",
+  "@medicationTracking": {
+    "description": "Subtitle for medication tracking"
+  },
+  "calendar": "Calendar",
+  "@calendar": {
+    "description": "Calendar tab title"
+  },
+  "medications": "Medications",
+  "@medications": {
+    "description": "Medications tab title"
+  },
+  "statistics": "Statistics",
+  "@statistics": {
+    "description": "Statistics tab title"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings tab title"
+  },
+  "today": "Today",
+  "@today": {
+    "description": "Today label"
+  },
+  "tomorrow": "Tomorrow",
+  "@tomorrow": {
+    "description": "Tomorrow label"
+  },
+  "yesterday": "Yesterday",
+  "@yesterday": {
+    "description": "Yesterday label"
+  },
+  "week": "Week",
+  "@week": {
+    "description": "Week label"
+  },
+  "month": "Month",
+  "@month": {
+    "description": "Month label"
+  },
+  "noMedications": "No medications",
+  "@noMedications": {
+    "description": "Message when no medications are available"
+  },
+  "addMedicationToStart": "Add medications to start tracking",
+  "@addMedicationToStart": {
+    "description": "Message to encourage adding medications"
+  },
+  "addMedication": "Add Medication",
+  "@addMedication": {
+    "description": "Add medication button text"
+  },
+  "editMedication": "Edit Medication",
+  "@editMedication": {
+    "description": "Edit medication dialog title"
+  },
+  "deleteMedication": "Delete Medication",
+  "@deleteMedication": {
+    "description": "Delete medication dialog title"
+  },
+  "confirmDeleteMedication": "Are you sure you want to delete \"{medicationName}\"?",
+  "@confirmDeleteMedication": {
+    "description": "Confirmation message for deleting medication",
+    "placeholders": {
+      "medicationName": {
+        "type": "String",
+        "description": "Name of the medication to delete"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button text"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Add button text"
+  },
+  "update": "Update",
+  "@update": {
+    "description": "Update button text"
+  },
+  "medicationName": "Medication Name",
+  "@medicationName": {
+    "description": "Medication name field label"
+  },
+  "dosage": "Dosage",
+  "@dosage": {
+    "description": "Dosage field label"
+  },
+  "description": "Description",
+  "@description": {
+    "description": "Description field label"
+  },
+  "optional": "Optional",
+  "@optional": {
+    "description": "Optional field indicator"
+  },
+  "icon": "Icon",
+  "@icon": {
+    "description": "Icon field label"
+  },
+  "schedule": "Schedule",
+  "@schedule": {
+    "description": "Schedule section title"
+  },
+  "startDate": "Start Date",
+  "@startDate": {
+    "description": "Start date field label"
+  },
+  "endDate": "End Date",
+  "@endDate": {
+    "description": "End date field label"
+  },
+  "selectDate": "Select Date",
+  "@selectDate": {
+    "description": "Select date placeholder"
+  },
+  "intakeTime": "Intake Time",
+  "@intakeTime": {
+    "description": "Intake time section title"
+  },
+  "addTime": "Add Time",
+  "@addTime": {
+    "description": "Add time button text"
+  },
+  "selectTime": "Select Time",
+  "@selectTime": {
+    "description": "Select time placeholder"
+  },
+  "basicInfo": "Basic Information",
+  "@basicInfo": {
+    "description": "Basic information section title"
+  },
+  "intakeSchedule": "Intake Schedule",
+  "@intakeSchedule": {
+    "description": "Intake schedule section title"
+  },
+  "addTimeSlot": "Add intake time",
+  "@addTimeSlot": {
+    "description": "Add intake time button text"
+  },
+  "scheduled": "Scheduled",
+  "@scheduled": {
+    "description": "Scheduled status"
+  },
+  "taken": "Taken",
+  "@taken": {
+    "description": "Taken status"
+  },
+  "missed": "Missed",
+  "@missed": {
+    "description": "Missed status"
+  },
+  "skipped": "Skipped",
+  "@skipped": {
+    "description": "Skipped status"
+  },
+  "intakeConfirmation": "Intake Confirmation",
+  "@intakeConfirmation": {
+    "description": "Intake confirmation dialog title"
+  },
+  "scheduledTime": "Scheduled Time",
+  "@scheduledTime": {
+    "description": "Scheduled time label"
+  },
+  "selectAction": "Select Action",
+  "@selectAction": {
+    "description": "Select action prompt"
+  },
+  "markAsTaken": "Mark as Taken",
+  "@markAsTaken": {
+    "description": "Mark as taken button text"
+  },
+  "skipIntake": "Skip Intake",
+  "@skipIntake": {
+    "description": "Skip intake button text"
+  },
+  "postponeIntake": "Postpone Intake",
+  "@postponeIntake": {
+    "description": "Postpone intake button text"
+  },
+  "skipReason": "Skip Reason",
+  "@skipReason": {
+    "description": "Skip reason dialog title"
+  },
+  "forgot": "Forgot",
+  "@forgot": {
+    "description": "Forgot skip reason"
+  },
+  "noMedication": "No medication",
+  "@noMedication": {
+    "description": "No medication skip reason"
+  },
+  "feelingUnwell": "Feeling unwell",
+  "@feelingUnwell": {
+    "description": "Feeling unwell skip reason"
+  },
+  "otherReason": "Other reason",
+  "@otherReason": {
+    "description": "Other reason skip reason"
+  },
+  "postponeIntakeTitle": "Postpone Intake",
+  "@postponeIntakeTitle": {
+    "description": "Postpone intake dialog title"
+  },
+  "selectNewTime": "Select new time",
+  "@selectNewTime": {
+    "description": "Select new time prompt"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+  "medicationMarkedAsTaken": "Medication marked as taken",
+  "@medicationMarkedAsTaken": {
+    "description": "Success message for marking medication as taken"
+  },
+  "intakeSkipped": "Intake skipped",
+  "@intakeSkipped": {
+    "description": "Success message for skipping intake"
+  },
+  "intakePostponed": "Intake postponed",
+  "@intakePostponed": {
+    "description": "Success message for postponing intake"
+  },
+  "selectStartAndEndDates": "Select start and end dates",
+  "@selectStartAndEndDates": {
+    "description": "Error message for missing dates"
+  },
+  "addAtLeastOneIntakeTime": "Add at least one intake time",
+  "@addAtLeastOneIntakeTime": {
+    "description": "Error message for missing intake times"
+  },
+  "enterMedicationName": "Enter medication name",
+  "@enterMedicationName": {
+    "description": "Validation message for medication name"
+  },
+  "enterDosage": "Enter dosage",
+  "@enterDosage": {
+    "description": "Validation message for dosage"
+  },
+  "overallAdherence": "Overall Adherence",
+  "@overallAdherence": {
+    "description": "Overall adherence card title"
+  },
+  "thisWeek": "This Week",
+  "@thisWeek": {
+    "description": "This week adherence card title"
+  },
+  "weeklyProgress": "Weekly Progress",
+  "@weeklyProgress": {
+    "description": "Weekly progress chart title"
+  },
+  "adherenceByDays": "Adherence by Days",
+  "@adherenceByDays": {
+    "description": "Adherence by days chart title"
+  },
+  "detailedStatistics": "Detailed Statistics",
+  "@detailedStatistics": {
+    "description": "Detailed statistics section title"
+  },
+  "statusDistribution": "Status Distribution",
+  "@statusDistribution": {
+    "description": "Status distribution section title"
+  },
+  "noDataForStatistics": "No data for statistics",
+  "@noDataForStatistics": {
+    "description": "Message when no data available for statistics"
+  },
+  "addMedicationsAndStartTaking": "Add medications and start taking them to get statistics",
+  "@addMedicationsAndStartTaking": {
+    "description": "Message to encourage adding medications for statistics"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications section title"
+  },
+  "enableNotifications": "Enable Notifications",
+  "@enableNotifications": {
+    "description": "Enable notifications setting"
+  },
+  "receiveReminders": "Receive medication intake reminders",
+  "@receiveReminders": {
+    "description": "Receive reminders setting description"
+  },
+  "reminderBefore": "Reminder Before",
+  "@reminderBefore": {
+    "description": "Reminder before setting"
+  },
+  "minutesBeforeIntake": "{minutes} minutes before intake",
+  "@minutesBeforeIntake": {
+    "description": "Minutes before intake setting",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "description": "Number of minutes"
+      }
+    }
+  },
+  "quietHours": "Quiet Hours",
+  "@quietHours": {
+    "description": "Quiet hours setting"
+  },
+  "doNotDisturbAtNight": "Do not disturb at night",
+  "@doNotDisturbAtNight": {
+    "description": "Do not disturb at night setting description"
+  },
+  "quietHoursStart": "Quiet Hours Start",
+  "@quietHoursStart": {
+    "description": "Quiet hours start setting"
+  },
+  "quietHoursEnd": "Quiet Hours End",
+  "@quietHoursEnd": {
+    "description": "Quiet hours end setting"
+  },
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Appearance section title"
+  },
+  "darkTheme": "Dark Theme",
+  "@darkTheme": {
+    "description": "Dark theme setting"
+  },
+  "useDarkTheme": "Use dark theme",
+  "@useDarkTheme": {
+    "description": "Use dark theme setting description"
+  },
+  "data": "Data",
+  "@data": {
+    "description": "Data section title"
+  },
+  "exportData": "Export Data",
+  "@exportData": {
+    "description": "Export data setting"
+  },
+  "saveDataToFile": "Save data to file",
+  "@saveDataToFile": {
+    "description": "Save data to file setting description"
+  },
+  "importData": "Import Data",
+  "@importData": {
+    "description": "Import data setting"
+  },
+  "loadDataFromFile": "Load data from file",
+  "@loadDataFromFile": {
+    "description": "Load data from file setting description"
+  },
+  "backup": "Backup",
+  "@backup": {
+    "description": "Backup setting"
+  },
+  "createBackup": "Create backup",
+  "@createBackup": {
+    "description": "Create backup setting description"
+  },
+  "clearData": "Clear Data",
+  "@clearData": {
+    "description": "Clear data setting"
+  },
+  "deleteAllData": "Delete all data",
+  "@deleteAllData": {
+    "description": "Delete all data setting description"
+  },
+  "aboutApp": "About App",
+  "@aboutApp": {
+    "description": "About app section title"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Version label"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy setting"
+  },
+  "readPrivacyPolicy": "Read privacy policy",
+  "@readPrivacyPolicy": {
+    "description": "Read privacy policy setting description"
+  },
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Terms of service setting"
+  },
+  "readTermsOfService": "Read terms of service",
+  "@readTermsOfService": {
+    "description": "Read terms of service setting description"
+  },
+  "feedback": "Feedback",
+  "@feedback": {
+    "description": "Feedback setting"
+  },
+  "contactDevelopers": "Contact developers",
+  "@contactDevelopers": {
+    "description": "Contact developers setting description"
+  },
+  "clearDataConfirmation": "Are you sure you want to delete all data? This action cannot be undone.",
+  "@clearDataConfirmation": {
+    "description": "Clear data confirmation message"
+  },
+  "dataCleared": "Data cleared",
+  "@dataCleared": {
+    "description": "Data cleared success message"
+  },
+  "exportFunctionWillBeImplemented": "Export function will be implemented",
+  "@exportFunctionWillBeImplemented": {
+    "description": "Export function placeholder message"
+  },
+  "importFunctionWillBeImplemented": "Import function will be implemented",
+  "@importFunctionWillBeImplemented": {
+    "description": "Import function placeholder message"
+  },
+  "backupFunctionWillBeImplemented": "Backup function will be implemented",
+  "@backupFunctionWillBeImplemented": {
+    "description": "Backup function placeholder message"
+  },
+  "privacyPolicyWillBeAdded": "Privacy policy will be added",
+  "@privacyPolicyWillBeAdded": {
+    "description": "Privacy policy placeholder message"
+  },
+  "termsOfServiceWillBeAdded": "Terms of service will be added",
+  "@termsOfServiceWillBeAdded": {
+    "description": "Terms of service placeholder message"
+  },
+  "feedbackFunctionWillBeImplemented": "Feedback function will be implemented",
+  "@feedbackFunctionWillBeImplemented": {
+    "description": "Feedback function placeholder message"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language setting"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Select language setting description"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "ukrainian": "Українська",
+  "@ukrainian": {
+    "description": "Ukrainian language option"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Active status"
+  },
+  "createdOn": "Created on",
+  "@createdOn": {
+    "description": "Created on label"
+  },
+  "adherence": "Adherence",
+  "@adherence": {
+    "description": "Adherence label"
+  },
+  "adherencePercentage": "Adherence (%)",
+  "@adherencePercentage": {
+    "description": "Adherence percentage label"
+  },
+  "monday": "Mon",
+  "@monday": {
+    "description": "Monday abbreviation"
+  },
+  "tuesday": "Tue",
+  "@tuesday": {
+    "description": "Tuesday abbreviation"
+  },
+  "wednesday": "Wed",
+  "@wednesday": {
+    "description": "Wednesday abbreviation"
+  },
+  "thursday": "Thu",
+  "@thursday": {
+    "description": "Thursday abbreviation"
+  },
+  "friday": "Fri",
+  "@friday": {
+    "description": "Friday abbreviation"
+  },
+  "saturday": "Sat",
+  "@saturday": {
+    "description": "Saturday abbreviation"
+  },
+  "sunday": "Sun",
+  "@sunday": {
+    "description": "Sunday abbreviation"
+  },
+  "january": "January",
+  "@january": {
+    "description": "January month name"
+  },
+  "february": "February",
+  "@february": {
+    "description": "February month name"
+  },
+  "march": "March",
+  "@march": {
+    "description": "March month name"
+  },
+  "april": "April",
+  "@april": {
+    "description": "April month name"
+  },
+  "may": "May",
+  "@may": {
+    "description": "May month name"
+  },
+  "june": "June",
+  "@june": {
+    "description": "June month name"
+  },
+  "july": "July",
+  "@july": {
+    "description": "July month name"
+  },
+  "august": "August",
+  "@august": {
+    "description": "August month name"
+  },
+  "september": "September",
+  "@september": {
+    "description": "September month name"
+  },
+  "october": "October",
+  "@october": {
+    "description": "October month name"
+  },
+  "november": "November",
+  "@november": {
+    "description": "November month name"
+  },
+  "december": "December",
+  "@december": {
+    "description": "December month name"
+  },
+  "timeToTakeMedication": "Time to take medication",
+  "@timeToTakeMedication": {
+    "description": "Medication reminder title"
+  },
+  "medicationReminderBody": "{medicationName} - {pillsCount} pills",
+  "@medicationReminderBody": {
+    "description": "Medication reminder body",
+    "placeholders": {
+      "medicationName": {
+        "type": "String",
+        "description": "Name of the medication"
+      },
+      "pillsCount": {
+        "type": "int",
+        "description": "Number of pills"
+      }
+    }
+  },
+  "followUpReminder": "Medication Reminder",
+  "@followUpReminder": {
+    "description": "Follow-up reminder title"
+  },
+  "dontForgetToTake": "Don't forget to take {medicationName}",
+  "@dontForgetToTake": {
+    "description": "Follow-up reminder body",
+    "placeholders": {
+      "medicationName": {
+        "type": "String",
+        "description": "Name of the medication"
+      }
+    }
+  },
+  "medicationReminders": "Medication Reminders",
+  "@medicationReminders": {
+    "description": "Medication reminders channel name"
+  },
+  "medicationRemindersDescription": "Reminders for medication intake",
+  "@medicationRemindersDescription": {
+    "description": "Medication reminders channel description"
+  },
+  "medicationAdded": "Medication added successfully",
+  "@medicationAdded": {
+    "description": "Success message when medication is added"
+  },
+  "medicationUpdated": "Medication updated successfully",
+  "@medicationUpdated": {
+    "description": "Success message when medication is updated"
+  },
+  "medicationDeleted": "Medication deleted",
+  "@medicationDeleted": {
+    "description": "Success message when medication is deleted"
+  },
+  "calendar": "Calendar",
+  "@calendar": {
+    "description": "Calendar tab label"
+  },
+  "dataExported": "Data exported successfully",
+  "@dataExported": {
+    "description": "Data export success message"
+  },
+  "dataImported": "Data imported successfully",
+  "@dataImported": {
+    "description": "Data import success message"
+  },
+  "importDataWarning": "This will replace all existing data. Are you sure?",
+  "@importDataWarning": {
+    "description": "Warning before importing data"
+  },
+  "import": "Import",
+  "@import": {
+    "description": "Import button label"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Error label"
+  },
+  "contactUs": "Contact Us",
+  "@contactUs": {
+    "description": "Contact us dialog title"
+  },
+  "cannotOpenUrl": "Cannot open URL",
+  "@cannotOpenUrl": {
+    "description": "Error when URL cannot be opened"
+  },
+  "cannotOpenEmail": "Cannot open email client",
+  "@cannotOpenEmail": {
+    "description": "Error when email cannot be opened"
+  },
+  "cannotOpenTelegram": "Cannot open Telegram",
+  "@cannotOpenTelegram": {
+    "description": "Error when Telegram cannot be opened"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Add button label"
+  },
+  "update": "Update",
+  "@update": {
+    "description": "Update button label"
+  },
+  "confirmIntake": "Confirm Intake",
+  "@confirmIntake": {
+    "description": "Title for intake confirmation dialog"
+  },
+  "chooseAction": "Choose action:",
+  "@chooseAction": {
+    "description": "Prompt to choose an action"
+  },
+  "skipReasonForgot": "Forgot",
+  "@skipReasonForgot": {
+    "description": "Skip reason: forgot to take medication"
+  },
+  "skipReasonNoMedicine": "Out of medicine",
+  "@skipReasonNoMedicine": {
+    "description": "Skip reason: no medicine available"
+  },
+  "skipReasonFeelBad": "Feeling unwell",
+  "@skipReasonFeelBad": {
+    "description": "Skip reason: feeling bad"
+  },
+  "skipReasonOther": "Other reason",
+  "@skipReasonOther": {
+    "description": "Skip reason: other"
+  },
+  "skipReason": "Skip Reason",
+  "@skipReason": {
+    "description": "Title for skip reason dialog"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button label"
+  },
+  "postponeIntake": "Postpone Intake",
+  "@postponeIntake": {
+    "description": "Title for postpone dialog"
+  },
+  "selectNewTime": "Select new time:",
+  "@selectNewTime": {
+    "description": "Prompt to select new time"
+  },
+  "selectTime": "Select time",
+  "@selectTime": {
+    "description": "Button to select time"
+  },
+  "noMedications": "No Medications",
+  "@noMedications": {
+    "description": "Empty state title for medications"
+  },
+  "deleteMedication": "Delete Medication",
+  "@deleteMedication": {
+    "description": "Title for delete confirmation dialog"
+  },
+  "confirmDeleteMedication": "Are you sure you want to delete \"{name}\"?",
+  "@confirmDeleteMedication": {
+    "description": "Confirmation message for deleting medication",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "overallStatistics": "Overall Statistics",
+  "@overallStatistics": {
+    "description": "Title for overall statistics section"
+  },
+  "weeklyProgress": "Weekly Progress",
+  "@weeklyProgress": {
+    "description": "Title for weekly progress section"
+  },
+  "detailedStatistics": "Detailed Statistics",
+  "@detailedStatistics": {
+    "description": "Title for detailed statistics section"
+  },
+  "overallAdherence": "Overall Adherence",
+  "@overallAdherence": {
+    "description": "Title for overall adherence card"
+  },
+  "thisWeek": "This Week",
+  "@thisWeek": {
+    "description": "Title for this week adherence card"
+  },
+  "statusDistribution": "Status Distribution",
+  "@statusDistribution": {
+    "description": "Title for status distribution section"
+  },
+  "basicInformation": "Basic Information",
+  "@basicInformation": {
+    "description": "Basic information section title"
+  },
+  "medicationName": "Medication Name",
+  "@medicationName": {
+    "description": "Medication name field label"
+  },
+  "enterMedicationName": "Enter medication name",
+  "@enterMedicationName": {
+    "description": "Validation message for medication name"
+  },
+  "enterDosage": "Enter dosage",
+  "@enterDosage": {
+    "description": "Validation message for dosage"
+  },
+  "dosageHint": "e.g.: 1 tablet, 5ml",
+  "@dosageHint": {
+    "description": "Hint for dosage field"
+  },
+  "descriptionOptional": "Description (optional)",
+  "@descriptionOptional": {
+    "description": "Description field label"
+  },
+  "additionalNotes": "Additional notes",
+  "@additionalNotes": {
+    "description": "Hint for description field"
+  },
+  "icon": "Icon",
+  "@icon": {
+    "description": "Icon selector label"
+  },
+  "intakeSchedule": "Intake Schedule",
+  "@intakeSchedule": {
+    "description": "Schedule section title"
+  },
+  "selectDate": "Select date",
+  "@selectDate": {
+    "description": "Placeholder for date selection"
+  },
+  "intakeTime": "Intake Time",
+  "@intakeTime": {
+    "description": "Time slots section title"
+  },
+  "addTime": "Add time",
+  "@addTime": {
+    "description": "Add time button label"
+  },
+  "addIntakeTime": "Add medication intake time",
+  "@addIntakeTime": {
+    "description": "Empty state message for time slots"
+  },
+  "selectStartEndDates": "Select start and end dates",
+  "@selectStartEndDates": {
+    "description": "Validation message for dates"
+  },
+  "addAtLeastOneTime": "Add at least one intake time",
+  "@addAtLeastOneTime": {
+    "description": "Validation message for time slots"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button label"
+  },
+  "created": "Created",
+  "@created": {
+    "description": "Created label"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "Active status label"
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Reset button label"
+  },
+  "resetIntake": "Reset Intake",
+  "@resetIntake": {
+    "description": "Reset intake button text"
+  },
+  "confirmResetIntake": "Are you sure you want to reset this intake?",
+  "@confirmResetIntake": {
+    "description": "Confirm reset intake message"
+  },
+  "unlimited": "Unlimited",
+  "@unlimited": {
+    "description": "Unlimited duration option"
+  },
+  "oneWeek": "1 Week",
+  "@oneWeek": {
+    "description": "One week quick filter"
+  },
+  "twoWeeks": "2 Weeks",
+  "@twoWeeks": {
+    "description": "Two weeks quick filter"
+  },
+  "oneMonth": "1 Month",
+  "@oneMonth": {
+    "description": "One month quick filter"
+  },
+  "frequency": "Frequency",
+  "@frequency": {
+    "description": "Medication frequency label"
+  },
+  "daily": "Daily",
+  "@daily": {
+    "description": "Daily frequency"
+  },
+  "weekly": "Weekly",
+  "@weekly": {
+    "description": "Weekly frequency"
+  },
+  "monthly": "Monthly",
+  "@monthly": {
+    "description": "Monthly frequency"
+  },
+  "everyNDays": "Every {n} days",
+  "@everyNDays": {
+    "description": "Every N days frequency",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
+}
