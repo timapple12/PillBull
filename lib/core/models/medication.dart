@@ -66,6 +66,8 @@ class MedicationDto {
         id: id,
         name: name,
         dosage: dosage,
+        description: description,
+        icon: icon,
         createdAt: createdAt,
         updatedAt: updatedAt,
       );
@@ -158,6 +160,8 @@ class MedicationScheduleDto {
     required this.patterns,
     required this.isActive,
     required this.createdAt,
+    this.frequencyValue = 1,
+    this.frequencyUnit = 'days',
   });
 
   factory MedicationScheduleDto.fromJson(Map<String, dynamic> json) =>
@@ -174,6 +178,8 @@ class MedicationScheduleDto {
             .toList(),
         isActive: json['isActive'] as bool,
         createdAt: DateTime.parse(json['createdAt'] as String),
+        frequencyValue: json['frequencyValue'] as int? ?? 1,
+        frequencyUnit: json['frequencyUnit'] as String? ?? 'days',
       );
   final String id;
   final String medicationId;
@@ -182,6 +188,8 @@ class MedicationScheduleDto {
   final List<DosagePatternDto> patterns;
   final bool isActive;
   final DateTime createdAt;
+  final int frequencyValue;
+  final String frequencyUnit;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -191,19 +199,26 @@ class MedicationScheduleDto {
         'patterns': patterns.map((pattern) => pattern.toJson()).toList(),
         'isActive': isActive,
         'createdAt': createdAt.toIso8601String(),
+        'frequencyValue': frequencyValue,
+        'frequencyUnit': frequencyUnit,
       };
 
-  MedicationScheduleDto copyWith(
-      {required DateTime startDate,
-      required DateTime endDate,
-      required List<DosagePatternDto> patterns,}) => MedicationScheduleDto(
+  MedicationScheduleDto copyWith({
+      DateTime? startDate,
+      DateTime? endDate,
+      List<DosagePatternDto>? patterns,
+      int? frequencyValue,
+      String? frequencyUnit,
+    }) => MedicationScheduleDto(
       id: id,
       medicationId: medicationId,
-      startDate: startDate,
-      endDate: endDate,
-      patterns: patterns,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      patterns: patterns ?? this.patterns,
       isActive: isActive,
       createdAt: createdAt,
+      frequencyValue: frequencyValue ?? this.frequencyValue,
+      frequencyUnit: frequencyUnit ?? this.frequencyUnit,
     );
 }
 

@@ -17,12 +17,19 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
+    },
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        // Add frequency columns to schedules table
+        await m.addColumn(schedules, schedules.frequencyValue);
+        await m.addColumn(schedules, schedules.frequencyUnit);
+      }
     },
   );
 }
@@ -61,6 +68,8 @@ class Schedules extends Table {
   DateTimeColumn get endDate => dateTime()();
   TextColumn get patterns => text().map(const DosagePatternListConverter())();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get frequencyValue => integer().withDefault(const Constant(1))();
+  TextColumn get frequencyUnit => text().withDefault(const Constant('days'))();
   DateTimeColumn get createdAt => dateTime()();
 
   @override

@@ -175,7 +175,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     showDialog(
       context: context,
       builder: (context) => AddMedicationDialog(
-        onSave: (medication, {startDate, endDate, timeSlots}) async {
+        onSave: (medication, {startDate, endDate, timeSlots, frequencyValue, frequencyUnit}) async {
           final medicationRepository = ref.read(medicationRepositoryProvider);
           await medicationRepository.createMedication(medication.toEntity());
           
@@ -196,6 +196,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               ],
               isActive: true,
               createdAt: DateTime.now(),
+              frequencyValue: frequencyValue ?? 1,
+              frequencyUnit: frequencyUnit ?? 'days',
             );
             await scheduleRepository.createSchedule(schedule);
             
@@ -214,8 +216,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             }
           }
           
-          ref.invalidate(medicationsProvider);
-          ref.invalidate(activeSchedulesProvider);
+          ref..invalidate(medicationsProvider)
+          ..invalidate(activeSchedulesProvider);
           
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -292,8 +294,7 @@ extension IntakeRecordCopyWith on IntakeRecord {
     IntakeStatusDto? status,
     String? skipReason,
     DateTime? createdAt,
-  }) {
-    return IntakeRecord(
+  }) => IntakeRecord(
       id: id ?? this.id,
       medicationId: medicationId ?? this.medicationId,
       scheduledTime: scheduledTime ?? this.scheduledTime,
@@ -302,5 +303,4 @@ extension IntakeRecordCopyWith on IntakeRecord {
       skipReason: skipReason ?? this.skipReason,
       createdAt: createdAt ?? this.createdAt,
     );
-  }
 }

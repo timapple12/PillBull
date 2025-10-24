@@ -6,11 +6,11 @@ import '../database/database.dart';
 import '../models/medication.dart';
 
 class NotificationService {
-  final FlutterLocalNotificationsPlugin _notifications;
-  final AppDatabase _database;
-  
+
   NotificationService(this._database)
       : _notifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications;
+  final AppDatabase _database;
 
   Future<void> initialize() async {
     tz.initializeTimeZones();
@@ -19,11 +19,7 @@ class NotificationService {
         AndroidInitializationSettings('@android:drawable/sym_def_app_icon');
     
     const DarwinInitializationSettings iosSettings =
-        DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-        );
+    DarwinInitializationSettings();
     
     const InitializationSettings settings = InitializationSettings(
       android: androidSettings,
@@ -40,6 +36,8 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
+
+    print("Notification initialized");
   }
 
   void _onNotificationTapped(NotificationResponse response) {
@@ -53,7 +51,9 @@ class NotificationService {
     required Medication medication,
     required Schedule schedule,
   }) async {
-    if (!schedule.isActive) return;
+    if (!schedule.isActive) {
+      return;
+    }
     
     // Cancel existing notifications for this medication
     await cancelNotificationsForMedication(medication.id);
@@ -61,15 +61,21 @@ class NotificationService {
     final now = DateTime.now();
     final endDate = schedule.endDate;
     
+    // Calculate frequency increment in days
+    final int frequencyInDays = _calculateFrequencyInDays(
+      schedule.frequencyValue,
+      schedule.frequencyUnit,
+    );
+    
     // Calculate all notification times within the schedule
     for (final pattern in schedule.patterns) {
       DateTime currentDate = schedule.startDate;
       
-      // Iterate through each day in the schedule
+      // Iterate through each day in the schedule based on frequency
       while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
         // Skip past dates
         if (currentDate.isBefore(DateTime(now.year, now.month, now.day))) {
-          currentDate = currentDate.add(const Duration(days: 1));
+          currentDate = currentDate.add(Duration(days: frequencyInDays));
           continue;
         }
         
@@ -113,13 +119,28 @@ class NotificationService {
           }
         }
         
-        currentDate = currentDate.add(const Duration(days: 1));
+        // Increment by frequency (e.g., every 2 days, every week, etc.)
+        currentDate = currentDate.add(Duration(days: frequencyInDays));
         
         // Limit to 30 days in advance to avoid too many scheduled notifications
         if (currentDate.isAfter(now.add(const Duration(days: 30)))) {
           break;
         }
       }
+    }
+  }
+
+  /// Calculate frequency in days based on value and unit
+  int _calculateFrequencyInDays(int value, String unit) {
+    switch (unit) {
+      case 'days':
+        return value;
+      case 'weeks':
+        return value * 7;
+      case 'months':
+        return value * 30; // Approximate month as 30 days
+      default:
+        return 1; // Default to daily
     }
   }
 

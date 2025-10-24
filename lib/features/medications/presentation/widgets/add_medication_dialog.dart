@@ -16,7 +16,7 @@ class AddMedicationDialog extends ConsumerStatefulWidget {
   });
   final MedicationDto? medication;
   final MedicationScheduleDto? schedule;
-  final Function(MedicationDto medication, {DateTime? startDate, DateTime? endDate, List<TimeSlotDto>? timeSlots}) onSave;
+  final Function(MedicationDto medication, {DateTime? startDate, DateTime? endDate, List<TimeSlotDto>? timeSlots, int? frequencyValue, String? frequencyUnit}) onSave;
 
   @override
   ConsumerState<AddMedicationDialog> createState() => _AddMedicationDialogState();
@@ -27,26 +27,28 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
   final _nameController = TextEditingController();
   final _dosageController = TextEditingController();
   final _descriptionController = TextEditingController();
-  
+
   int _selectedIconIndex = 0;
   DateTime? _startDate;
   DateTime? _endDate;
   bool _isUnlimitedEndDate = false;
-  String _frequency = 'daily'; // daily, weekly, monthly - reserved for future use
+  String _frequencyUnit = 'days'; // days, weeks, months
+  int _frequencyValue = 1;
+  final _frequencyController = TextEditingController(text: '1');
   final List<TimeSlotDto> _timeSlots = [];
 
   @override
   void initState() {
     super.initState();
-    
+
     // Set default icon (first one - pills)
     _selectedIconIndex = 0;
-    
+
     if (widget.medication != null) {
       _nameController.text = widget.medication!.name;
       _dosageController.text = widget.medication!.dosage;
       _descriptionController.text = widget.medication!.description ?? '';
-      
+
       // Find icon index from stored icon string
       if (widget.medication!.icon != null && widget.medication!.icon!.isNotEmpty) {
         final parsedIndex = int.tryParse(widget.medication!.icon!);
@@ -55,11 +57,14 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
         }
       }
     }
-    
+
     if (widget.schedule != null) {
       _startDate = widget.schedule!.startDate;
       _endDate = widget.schedule!.endDate;
-      
+      _frequencyValue = widget.schedule!.frequencyValue;
+      _frequencyUnit = widget.schedule!.frequencyUnit;
+      _frequencyController.text = _frequencyValue.toString();
+
       _timeSlots.clear();
       for (final pattern in widget.schedule!.patterns) {
         for (final slot in pattern.dailySlots) {
@@ -78,6 +83,7 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
     _nameController.dispose();
     _dosageController.dispose();
     _descriptionController.dispose();
+    _frequencyController.dispose();
     super.dispose();
   }
 
@@ -89,7 +95,7 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
     final headerGradientStart = isDark ? const Color(0xFF3A3548) : const Color(0xFFE8DFF5);
     final headerGradientEnd = isDark ? const Color(0xFF4A4458) : const Color(0xFFFCE7F3);
     final footerColor = isDark ? const Color(0xFF3A3548) : Colors.white;
-    
+
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -165,6 +171,8 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
                       _buildBasicInfoSection(l10n),
                       const SizedBox(height: AppConstants.paddingLarge),
                       _buildScheduleSection(l10n),
+                      const SizedBox(height: AppConstants.paddingSmall),
+                      _buildIconSelector(l10n),
                     ],
                   ),
                 ),
@@ -264,10 +272,8 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
             border: const OutlineInputBorder(),
             hintText: l10n.additionalNotes,
           ),
-          maxLines: 3,
+          maxLines: 2,
         ),
-        const SizedBox(height: AppConstants.paddingMedium),
-        _buildIconSelector(l10n),
       ],
     );
 
@@ -283,7 +289,7 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
             final index = entry.key;
             final icon = entry.value;
             final isSelected = _selectedIconIndex == index;
-            
+
             return GestureDetector(
               onTap: () {
                 setState(() {
@@ -343,7 +349,7 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
                 context: context,
                 initialDate: _startDate ?? DateTime.now(),
                 firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(const Duration(days: 365)),
+                lastDate: DateTime.now().add(const Duration(days: 365 * 100)),
               );
               if (date != null && mounted) {
                 setState(() {
@@ -417,35 +423,15 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
                               : Colors.grey[500],
                         ),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Checkbox(
-                    value: _isUnlimitedEndDate,
-                    onChanged: (value) {
-                      setState(() {
-                        _isUnlimitedEndDate = value ?? false;
-                        if (_isUnlimitedEndDate) {
-                          _endDate = DateTime.now().add(const Duration(days: 3650));
-                        }
-                      });
-                    },
-                  ),
-                  Text(
-                    l10n.unlimited,
-                    style: AppTextStyles.bodySmall,
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
 
   Widget _buildQuickDateFilters(AppLocalizations l10n) => Wrap(
       spacing: AppConstants.paddingSmall,
@@ -453,69 +439,136 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
         _buildQuickFilterChip(l10n.oneWeek, 7),
         _buildQuickFilterChip(l10n.twoWeeks, 14),
         _buildQuickFilterChip(l10n.oneMonth, 30),
+        _buildQuickFilterChip(l10n.unlimited, 365 * 100),
       ],
     );
 
   Widget _buildQuickFilterChip(String label, int days) => ActionChip(
       label: Text(label, style: AppTextStyles.labelSmall),
       onPressed: () {
+        final now = DateTime.now();
         setState(() {
-          if (_startDate == null) {
-            _startDate = DateTime.now();
-          }
+          // Always set start date to today when using quick filter
+          _startDate = DateTime(now.year, now.month, now.day);
           _endDate = _startDate!.add(Duration(days: days));
           _isUnlimitedEndDate = false;
         });
       },
       backgroundColor: AppConstants.secondaryColor,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.zero,
     );
 
   Widget _buildFrequencySelector(AppLocalizations l10n) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.frequency),
+        Text(l10n.frequency, style: AppTextStyles.titleSmall),
         const SizedBox(height: AppConstants.paddingSmall),
-        Wrap(
-          spacing: AppConstants.paddingSmall,
+        Row(
           children: [
-            ChoiceChip(
-              label: Text(l10n.daily),
-              selected: _frequency == 'daily',
-              onSelected: (selected) {
-                if (selected) {
-                  setState(() {
-                    _frequency = 'daily';
-                  });
-                }
-              },
+            Text(l10n.everyNDays(0).split(' ')[0]), // "Every" or "Кожні"
+            const SizedBox(width: AppConstants.paddingSmall),
+            SizedBox(
+              width: 70,
+              child: TextFormField(
+                controller: _frequencyController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppConstants.paddingSmall,
+                    vertical: AppConstants.paddingSmall,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppConstants.radiusSmall),
+                  ),
+                ),
+                onChanged: (value) {
+                  final parsed = int.tryParse(value);
+                  if (parsed != null && parsed > 0) {
+                    setState(() {
+                      _frequencyValue = parsed;
+                    });
+                  }
+                },
+                validator: (value) {
+                  final parsed = int.tryParse(value ?? '');
+                  if (parsed == null || parsed < 1) {
+                    return l10n.enterMedicationName; // Reuse or add new key
+                  }
+                  return null;
+                },
+              ),
             ),
-            ChoiceChip(
-              label: Text(l10n.weekly),
-              selected: _frequency == 'weekly',
-              onSelected: (selected) {
-                if (selected) {
-                  setState(() {
-                    _frequency = 'weekly';
-                  });
-                }
-              },
-            ),
-            ChoiceChip(
-              label: Text(l10n.monthly),
-              selected: _frequency == 'monthly',
-              onSelected: (selected) {
-                if (selected) {
-                  setState(() {
-                    _frequency = 'monthly';
-                  });
-                }
-              },
+            const SizedBox(width: AppConstants.paddingSmall),
+            Expanded(
+              child: DropdownButtonFormField<String>(
+                initialValue: _frequencyUnit,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppConstants.paddingSmall,
+                    vertical: AppConstants.paddingSmall,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppConstants.radiusSmall),
+                  ),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: 'days',
+                    child: Text(_frequencyValue == 1 ? l10n.daily.toLowerCase() : 'днів'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'weeks',
+                    child: Text(_frequencyValue == 1 ? l10n.weekly.toLowerCase() : 'тижнів'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'months',
+                    child: Text(_frequencyValue == 1 ? l10n.monthly.toLowerCase() : 'місяців'),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _frequencyUnit = value;
+                    });
+                  }
+                },
+              ),
             ),
           ],
         ),
+        const SizedBox(height: 4),
+        Text(
+          _getFrequencyDescription(l10n),
+          style: AppTextStyles.bodySmall.copyWith(
+            color: Colors.grey[600],
+            fontStyle: FontStyle.italic,
+          ),
+        ),
       ],
     );
+
+  String _getFrequencyDescription(AppLocalizations l10n) {
+    if (_frequencyValue == 1) {
+      switch (_frequencyUnit) {
+        case 'days':
+          return l10n.daily; // "Daily" or "Щодня"
+        case 'weeks':
+          return l10n.weekly; // "Weekly" or "Щотижня"
+        case 'months':
+          return l10n.monthly; // "Monthly" or "Щомісяця"
+      }
+    }
+
+    switch (_frequencyUnit) {
+      case 'days':
+        return 'Кожні $_frequencyValue днів';
+      case 'weeks':
+        return 'Кожні $_frequencyValue тижнів';
+      case 'months':
+        return 'Кожні $_frequencyValue місяців';
+    }
+    return '';
+  }
 
   Widget _buildTimeSlotsSection(AppLocalizations l10n) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -604,14 +657,14 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
       context: context,
       initialTime: const TimeOfDay(hour: 9, minute: 0),
     );
-    
+
     if (time != null) {
       final timeSlot = TimeSlotDto(
         hour: time.hour,
         minute: time.minute,
         label: '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
       );
-      
+
       setState(() {
         _timeSlots.add(timeSlot);
       });
@@ -624,14 +677,14 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
       context: context,
       initialTime: TimeOfDay(hour: currentSlot.hour, minute: currentSlot.minute),
     );
-    
+
     if (time != null) {
       final updatedSlot = TimeSlotDto(
         hour: time.hour,
         minute: time.minute,
         label: '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
       );
-      
+
       setState(() {
         _timeSlots[index] = updatedSlot;
       });
@@ -644,53 +697,49 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
     });
   }
 
+  void _showErrorSnackBar(String message) {
+    final overlay = Overlay.of(context);
+    final entry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: 10,
+        left: 20,
+        right: 20,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppConstants.errorColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(message, style: const TextStyle(color: Colors.white)),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(entry);
+    Future.delayed(const Duration(seconds: 3), entry.remove);
+  }
+
   void _saveMedication() {
     final l10n = AppLocalizations.of(context)!;
-    
-    if (!_formKey.currentState!.validate()) return;
-    
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     if (_startDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.selectStartEndDates),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height - 100,
-            left: 20,
-            right: 20,
-          ),
-        ),
-      );
+      _showErrorSnackBar(l10n.selectStartEndDates);
       return;
     }
-    
+
     if (!_isUnlimitedEndDate && _endDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.selectStartEndDates),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height - 100,
-            left: 20,
-            right: 20,
-          ),
-        ),
-      );
+      _showErrorSnackBar(l10n.selectStartEndDates);
       return;
     }
-    
+
     if (_timeSlots.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.addAtLeastOneTime),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height - 100,
-            left: 20,
-            right: 20,
-          ),
-        ),
-      );
+      _showErrorSnackBar(l10n.addAtLeastOneTime);
       return;
     }
 
@@ -698,14 +747,14 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
       id: widget.medication?.id ?? const Uuid().v4(),
       name: _nameController.text.trim(),
       dosage: _dosageController.text.trim(),
-      description: _descriptionController.text.trim().isEmpty 
-          ? null 
+      description: _descriptionController.text.trim().isEmpty
+          ? null
           : _descriptionController.text.trim(),
       icon: _selectedIconIndex.toString(),
       createdAt: widget.medication?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
     );
-    
+
     debugPrint('Saving medication with icon index: $_selectedIconIndex');
 
     widget.onSave(
@@ -713,7 +762,10 @@ class _AddMedicationDialogState extends ConsumerState<AddMedicationDialog> {
       startDate: _startDate,
       endDate: _endDate,
       timeSlots: List.from(_timeSlots),
+      frequencyValue: _frequencyValue,
+      frequencyUnit: _frequencyUnit,
     );
     Navigator.of(context).pop();
   }
 }
+

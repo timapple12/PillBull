@@ -91,7 +91,7 @@ class MedicationsScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AddMedicationDialog(
-        onSave: (medication, {startDate, endDate, timeSlots}) async {
+        onSave: (medication, {startDate, endDate, timeSlots, frequencyValue, frequencyUnit}) async {
           final medicationRepository = ref.read(medicationRepositoryProvider);
           await medicationRepository.createMedication(medication.toEntity());
           
@@ -112,6 +112,8 @@ class MedicationsScreen extends ConsumerWidget {
               ],
               isActive: true,
               createdAt: DateTime.now(),
+              frequencyValue: frequencyValue ?? 1,
+              frequencyUnit: frequencyUnit ?? 'days',
             );
             await scheduleRepository.createSchedule(schedule);
             
@@ -155,7 +157,7 @@ class MedicationsScreen extends ConsumerWidget {
       builder: (context) => AddMedicationDialog(
         medication: medication.toDto(),
         schedule: schedule,
-        onSave: (updatedMedication, {startDate, endDate, timeSlots}) async {
+        onSave: (updatedMedication, {startDate, endDate, timeSlots, frequencyValue, frequencyUnit}) async {
           final medicationRepository = ref.read(medicationRepositoryProvider);
           await medicationRepository.updateMedication(updatedMedication.toEntity());
           
@@ -172,6 +174,8 @@ class MedicationsScreen extends ConsumerWidget {
                     pillsPerSlot: 1,
                   ),
                 ],
+                frequencyValue: frequencyValue,
+                frequencyUnit: frequencyUnit,
               );
               await scheduleRepository.updateSchedule(updatedSchedule);
               
@@ -204,6 +208,8 @@ class MedicationsScreen extends ConsumerWidget {
                 ],
                 isActive: true,
                 createdAt: DateTime.now(),
+                frequencyValue: frequencyValue ?? 1,
+                frequencyUnit: frequencyUnit ?? 'days',
               );
               await scheduleRepository.createSchedule(newSchedule);
               

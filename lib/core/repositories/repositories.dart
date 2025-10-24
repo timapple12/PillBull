@@ -134,6 +134,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       patterns: row.patterns,
       isActive: row.isActive,
       createdAt: row.createdAt,
+      frequencyValue: row.frequencyValue,
+      frequencyUnit: row.frequencyUnit,
     ),).toList();
   }
 
@@ -159,6 +161,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       patterns: row.patterns,
       isActive: row.isActive,
       createdAt: row.createdAt,
+      frequencyValue: row.frequencyValue,
+      frequencyUnit: row.frequencyUnit,
     ),).toList();
   }
 
@@ -172,6 +176,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         endDate: schedule.endDate,
         patterns: schedule.patterns,
         createdAt: schedule.createdAt,
+        frequencyValue: Value(schedule.frequencyValue),
+        frequencyUnit: Value(schedule.frequencyUnit),
       ),
     );
     return schedule.id;
@@ -188,6 +194,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         patterns: Value(schedule.patterns),
         isActive: Value(schedule.isActive),
         createdAt: Value(schedule.createdAt),
+        frequencyValue: Value(schedule.frequencyValue),
+        frequencyUnit: Value(schedule.frequencyUnit),
       ),);
   }
 

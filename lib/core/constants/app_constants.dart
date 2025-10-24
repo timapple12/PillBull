@@ -11,7 +11,7 @@ class AppConstants {
   static const Color primaryColor = Color(0xFF9C88D4); // Soft purple
   static const Color secondaryColor = Color(0xFFE8DFF5); // Light lavender
   static const Color accentColor = Color(0xFFDEB8BC); // Dusty rose
-  static const Color errorColor = Color(0xFFD98C96); // Soft red
+  static const Color errorColor = Color(0xFFF86D7C); // Soft red
   static const Color successColor = Color(0xFFA8D5BA); // Sage green
   static const Color warningColor = Color(0xFFFFCB9A); // Peach
   static const Color backgroundColor = Color(0xFFFAF8F3); // Warm cream

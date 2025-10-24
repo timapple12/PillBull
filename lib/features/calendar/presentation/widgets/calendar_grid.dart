@@ -52,7 +52,7 @@ class CalendarGrid extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 130,
+            width: 110,
             child: Center(
               child: Text(
                 l10n.medications,
@@ -94,7 +94,7 @@ class CalendarGrid extends StatelessWidget {
                             AppUtils.getWeekdayName(date, l10n),
                             style: AppTextStyles.labelSmall.copyWith(
                               color: isToday ? AppConstants.primaryColor : Colors.grey[700],
-                              fontWeight: isToday ? FontWeight.bold : FontWeight.w600,
+                              fontWeight: isToday ? FontWeight.bold : FontWeight.w500,
                               fontSize: 10,
                             ),
                             textAlign: TextAlign.center,
@@ -107,7 +107,7 @@ class CalendarGrid extends StatelessWidget {
                           style: AppTextStyles.titleLarge.copyWith(
                             color: isToday ? AppConstants.primaryColor : Colors.grey[800],
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 15,
                           ),
                         ),
                       ],
@@ -167,7 +167,7 @@ class CalendarGrid extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              width: 130,
+              width: 110,
               padding: const EdgeInsets.symmetric(
                 horizontal: AppConstants.paddingSmall,
                 vertical: AppConstants.paddingSmall,
@@ -264,7 +264,7 @@ class CalendarGrid extends StatelessWidget {
       return false;
     }
     
-    // Check if date is within any active schedule range
+    // Check if date is within any active schedule range AND matches frequency
     for (final schedule in medicationSchedules) {
       final startDate = DateTime(
         schedule.startDate.year,
@@ -287,11 +287,45 @@ class CalendarGrid extends StatelessWidget {
       
       // Check if date is within schedule range
       if (!checkDate.isBefore(startDate) && !checkDate.isAfter(endDate)) {
-        return true;
+        // Check if date matches frequency pattern
+        if (_isDateMatchingFrequency(checkDate, startDate, schedule.frequencyValue, schedule.frequencyUnit)) {
+          return true;
+        }
       }
     }
     
     return false;
+  }
+
+  /// Check if a date matches the medication's frequency pattern
+  bool _isDateMatchingFrequency(
+    DateTime checkDate,
+    DateTime startDate,
+    int frequencyValue,
+    String frequencyUnit,
+  ) {
+    // Calculate the difference in days between checkDate and startDate
+    final daysDifference = checkDate.difference(startDate).inDays;
+    
+    // Calculate frequency in days
+    int frequencyInDays;
+    switch (frequencyUnit) {
+      case 'days':
+        frequencyInDays = frequencyValue;
+        break;
+      case 'weeks':
+        frequencyInDays = frequencyValue * 7;
+        break;
+      case 'months':
+        frequencyInDays = frequencyValue * 30; // Approximate
+        break;
+      default:
+        frequencyInDays = 1; // Default to daily
+    }
+    
+    // Check if the date falls on a scheduled day
+    // The medication should be taken if daysDifference is a multiple of frequencyInDays
+    return daysDifference >= 0 && daysDifference % frequencyInDays == 0;
   }
 
   List<IntakeRecordDto> _getRecordsForMedicationAndDate(
