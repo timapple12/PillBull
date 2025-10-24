@@ -231,6 +231,7 @@ class IntakeRecordDto {
     this.actualTime,
     required this.status,
     this.skipReason,
+    this.pillsCount = 1,
     required this.createdAt,
   });
 
@@ -247,6 +248,7 @@ class IntakeRecordDto {
           orElse: () => IntakeStatusDto.scheduled,
         ),
         skipReason: json['skipReason'] as String?,
+        pillsCount: json['pillsCount'] as int? ?? 1,
         createdAt: DateTime.parse(json['createdAt'] as String),
       );
   final String id;
@@ -255,6 +257,7 @@ class IntakeRecordDto {
   final DateTime? actualTime;
   final IntakeStatusDto status;
   final String? skipReason;
+  final int pillsCount;
   final DateTime createdAt;
 
   Map<String, dynamic> toJson() => {
@@ -264,6 +267,7 @@ class IntakeRecordDto {
         'actualTime': actualTime?.toIso8601String(),
         'status': status.name,
         'skipReason': skipReason,
+        'pillsCount': pillsCount,
         'createdAt': createdAt.toIso8601String(),
       };
 
@@ -271,7 +275,10 @@ class IntakeRecordDto {
         id: id,
         medicationId: medicationId,
         scheduledTime: scheduledTime,
+        actualTime: actualTime,
         status: status,
+        skipReason: skipReason,
+        pillsCount: pillsCount,
         createdAt: createdAt,
       );
 }
@@ -281,6 +288,9 @@ extension IntakeRecordMapper on IntakeRecord {
       id: id,
       medicationId: medicationId,
       scheduledTime: scheduledTime,
+      actualTime: actualTime,
       status: status,
+      skipReason: skipReason,
+      pillsCount: pillsCount,
       createdAt: createdAt);
 }

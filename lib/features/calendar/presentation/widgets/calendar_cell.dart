@@ -172,9 +172,5 @@ class CalendarCell extends StatelessWidget {
     }
   }
 
-  int _getPillsCountForRecord(IntakeRecordDto record) {
-    // This would typically come from the schedule pattern
-    // For now, return a default value
-    return 1;
-  }
+  int _getPillsCountForRecord(IntakeRecordDto record) => record.pillsCount;
 }

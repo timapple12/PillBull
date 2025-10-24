@@ -1191,6 +1191,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next month'**
   String get nextMonth;
+
+  /// Error when medication has no schedule
+  ///
+  /// In en, this message translates to:
+  /// **'No schedule found for this medication'**
+  String get noScheduleForMedication;
+
+  /// Medication skipped message
+  ///
+  /// In en, this message translates to:
+  /// **'Medication skipped'**
+  String get medicationSkipped;
 }
 
 class _AppLocalizationsDelegate

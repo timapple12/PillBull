@@ -572,4 +572,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nextMonth => 'Next month';
+
+  @override
+  String get noScheduleForMedication => 'No schedule found for this medication';
+
+  @override
+  String get medicationSkipped => 'Medication skipped';
 }

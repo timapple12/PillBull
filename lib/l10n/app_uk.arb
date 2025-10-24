@@ -221,5 +221,8 @@
   "september": "Вересень",
   "october": "Жовтень",
   "november": "Листопад",
-  "december": "Грудень"
+  "december": "Грудень",
+  "noScheduleForMedication": "Не знайдено розклад для цього медикаменту",
+  "medicationSkipped": "Медикамент пропущено",
+  "intakePostponed": "Прийом відкладено"
 }

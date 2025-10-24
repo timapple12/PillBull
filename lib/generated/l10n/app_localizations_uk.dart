@@ -185,7 +185,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get intakeSkipped => 'Прийом ліків пропущено';
 
   @override
-  String get intakePostponed => 'Прийом ліків відкладено';
+  String get intakePostponed => 'Прийом відкладено';
 
   @override
   String get selectStartAndEndDates => 'Оберіть дати початку та закінчення';
@@ -570,4 +570,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nextMonth => 'Наступний місяць';
+
+  @override
+  String get noScheduleForMedication =>
+      'Не знайдено розклад для цього медикаменту';
+
+  @override
+  String get medicationSkipped => 'Медикамент пропущено';
 }

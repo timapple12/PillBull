@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import '../database/database.dart';
 import '../models/medication.dart' hide MedicationDto, IntakeRecordDto;
 
@@ -242,6 +243,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
                 medicationId: medicationId,
                 scheduledTime: scheduledTime,
                 status: IntakeStatusDto.scheduled,
+                pillsCount: 1,
                 createdAt: DateTime.now(),
               ),);
             }
@@ -277,6 +279,7 @@ class IntakeRecordRepositoryImpl implements IntakeRecordRepository {
       actualTime: row.actualTime,
       status: row.status,
       skipReason: row.skipReason,
+      pillsCount: row.pillsCount,
       createdAt: row.createdAt,
     ),).toList();
   }
@@ -294,6 +297,7 @@ class IntakeRecordRepositoryImpl implements IntakeRecordRepository {
       actualTime: row.actualTime,
       status: row.status,
       skipReason: row.skipReason,
+      pillsCount: row.pillsCount,
       createdAt: row.createdAt,
     ),).toList();
   }
@@ -315,24 +319,33 @@ class IntakeRecordRepositoryImpl implements IntakeRecordRepository {
       actualTime: row.actualTime,
       status: row.status,
       skipReason: row.skipReason,
+      pillsCount: row.pillsCount,
       createdAt: row.createdAt,
     );
   }
 
   @override
   Future<String> createRecord(IntakeRecord record) async {
-    await _database.into(_database.intakeRecords).insert(
-      IntakeRecordsCompanion.insert(
-        id: record.id,
-        medicationId: record.medicationId,
-        scheduledTime: record.scheduledTime,
-        actualTime: Value(record.actualTime),
-        status: record.status,
-        skipReason: Value(record.skipReason),
-        createdAt: record.createdAt,
-      ),
-    );
-    return record.id;
+    try {
+      await _database.into(_database.intakeRecords).insert(
+        IntakeRecordsCompanion.insert(
+          id: record.id,
+          medicationId: record.medicationId,
+          scheduledTime: record.scheduledTime,
+          actualTime: Value(record.actualTime),
+          status: record.status,
+          skipReason: Value(record.skipReason),
+          pillsCount: Value(record.pillsCount),
+          createdAt: record.createdAt,
+        ),
+      );
+
+      return record.id;
+    } catch (e, stackTrace) {
+      debugPrint('DB: Failed to insert record: $e');
+      debugPrint('StackTrace: $stackTrace');
+      rethrow;
+    }
   }
 
   @override
@@ -345,6 +358,7 @@ class IntakeRecordRepositoryImpl implements IntakeRecordRepository {
         actualTime: Value(record.actualTime),
         status: Value(record.status),
         skipReason: Value(record.skipReason),
+        pillsCount: Value(record.pillsCount),
         createdAt: Value(record.createdAt),
       ),);
   }

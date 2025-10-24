@@ -219,5 +219,8 @@
   "september": "September",
   "october": "Oktober",
   "november": "November",
-  "december": "Dezember"
+  "december": "Dezember",
+  "noScheduleForMedication": "Kein Zeitplan für dieses Medikament gefunden",
+  "medicationSkipped": "Medikament übersprungen",
+  "intakePostponed": "Einnahme verschoben"
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/database.dart';
-import '../../../../core/models/medication.dart' hide IntakeRecordDto;
+import '../../../../core/models/medication.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../../../shared/providers/notification_provider.dart';
 import '../../../../shared/providers/providers.dart';
@@ -125,7 +125,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         record: record.toDto(),
         onTaken: () => _markAsTaken(record, l10n),
         onSkipped: (reason) => _markAsSkipped(record, reason, l10n),
-        onPostponed: (newTime) => _postponeIntake(record, newTime, l10n),
+        onPostponed: (newTime, l10n) => _postponeIntake(record, newTime, l10n),
       ),
     );
   }
@@ -136,9 +136,25 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     AppLocalizations l10n,
   ) async {
     final schedules = await ref.read(scheduleRepositoryProvider).getSchedulesByMedicationId(medication.id);
-    if (schedules.isEmpty) return;
+    if (schedules.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.noScheduleForMedication)),
+        );
+      }
+      return;
+    }
     
     final schedule = schedules.first;
+    if (schedule.patterns.isEmpty || schedule.patterns.first.dailySlots.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.noScheduleForMedication)),
+        );
+      }
+      return;
+    }
+    
     final timeSlot = schedule.patterns.first.dailySlots.first;
     
     final scheduledTime = DateTime(
@@ -148,24 +164,127 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       timeSlot.hour,
       timeSlot.minute,
     );
-    
-    final newRecord = IntakeRecord(
-      id: const Uuid().v4(),
-      medicationId: medication.id,
-      scheduledTime: scheduledTime,
-      actualTime: null,
-      status: IntakeStatusDto.scheduled,
-      skipReason: null,
-      createdAt: DateTime.now(),
-    );
-    
-    final repository = ref.read(intakeRecordRepositoryProvider);
-    await repository.createRecord(newRecord);
-    
-    ref.invalidate(intakeRecordsForDateRangeProvider);
-    
+
+    // Only show dialog, don't create record yet
     if (mounted) {
-      _showIntakeConfirmationDialog(newRecord, l10n);
+      await showDialog(
+        context: context,
+        builder: (dialogContext) => IntakeConfirmationDialog(
+          record: IntakeRecordDto(
+            id: const Uuid().v4(),
+            medicationId: medication.id,
+            scheduledTime: scheduledTime,
+            actualTime: null,
+            status: IntakeStatusDto.scheduled,
+            skipReason: null,
+            pillsCount: 1,
+            createdAt: DateTime.now(),
+          ),
+          onTaken: () async {
+            try {
+
+              final newRecord = IntakeRecord(
+                id: const Uuid().v4(),
+                medicationId: medication.id,
+                scheduledTime: scheduledTime,
+                actualTime: DateTime.now(),
+                status: IntakeStatusDto.taken,
+                skipReason: null,
+                pillsCount: 1,
+                createdAt: DateTime.now(),
+              );
+              
+              debugPrint('Creating record with ID: ${newRecord.id}');
+              
+              final repository = ref.read(intakeRecordRepositoryProvider);
+              final recordId = await repository.createRecord(newRecord);
+              
+              debugPrint('Record created with ID: $recordId');
+              
+              // Force refresh by invalidating the provider
+              ref.invalidate(intakeRecordsForDateRangeProvider);
+              
+
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.medicationMarkedAsTaken)),
+                );
+              }
+              
+              debugPrint('UI refresh triggered');
+            } catch (e, stackTrace) {
+              debugPrint('Error in onTaken: $e');
+              debugPrint('StackTrace: $stackTrace');
+            }
+          },
+          onSkipped: (reason) async {
+            try {
+              debugPrint('onSkipped called for ${medication.name}');
+              
+              final newRecord = IntakeRecord(
+                id: const Uuid().v4(),
+                medicationId: medication.id,
+                scheduledTime: scheduledTime,
+                actualTime: null,
+                status: IntakeStatusDto.skipped,
+                skipReason: reason,
+                pillsCount: 0,
+                createdAt: DateTime.now(),
+              );
+              
+              final repository = ref.read(intakeRecordRepositoryProvider);
+              await repository.createRecord(newRecord);
+              
+              debugPrint('Skip record created');
+              
+              ref.invalidate(intakeRecordsForDateRangeProvider);
+
+              if (mounted) {
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.medicationSkipped)),
+                );
+              }
+
+            } catch (e, stackTrace) {
+              debugPrint(' Error in onSkipped: $e');
+              debugPrint('StackTrace: $stackTrace');
+            }
+          },
+          onPostponed: (newTime, l10n) async {
+            try {
+              debugPrint('onPostponed called for ${medication.name}');
+              
+              final newRecord = IntakeRecord(
+                id: const Uuid().v4(),
+                medicationId: medication.id,
+                scheduledTime: newTime,
+                actualTime: null,
+                status: IntakeStatusDto.scheduled,
+                skipReason: null,
+                pillsCount: 1,
+                createdAt: DateTime.now(),
+              );
+              
+              final repository = ref.read(intakeRecordRepositoryProvider);
+              await repository.createRecord(newRecord);
+              
+              debugPrint('Postponed record created');
+              
+              ref.invalidate(intakeRecordsForDateRangeProvider);
+
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l10n.intakePostponed)),
+                );
+              }
+            } catch (e, stackTrace) {
+              debugPrint('Error in onPostponed: $e');
+              debugPrint('StackTrace: $stackTrace');
+            }
+          },
+        ),
+      );
     }
   }
 
@@ -233,6 +352,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final updatedRecord = record.copyWith(
       status: IntakeStatusDto.taken,
       actualTime: Value(DateTime.now()),
+      pillsCount: record.pillsCount + 1,
     );
     
     final repository = ref.read(intakeRecordRepositoryProvider);
@@ -293,6 +413,7 @@ extension IntakeRecordCopyWith on IntakeRecord {
     DateTime? actualTime,
     IntakeStatusDto? status,
     String? skipReason,
+    int? pillsCount,
     DateTime? createdAt,
   }) => IntakeRecord(
       id: id ?? this.id,
@@ -301,6 +422,7 @@ extension IntakeRecordCopyWith on IntakeRecord {
       actualTime: actualTime ?? this.actualTime,
       status: status ?? this.status,
       skipReason: skipReason ?? this.skipReason,
+      pillsCount: pillsCount ?? this.pillsCount,
       createdAt: createdAt ?? this.createdAt,
     );
 }

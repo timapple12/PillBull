@@ -15,7 +15,7 @@ class IntakeConfirmationDialog extends StatefulWidget {
   final IntakeRecordDto record;
   final VoidCallback onTaken;
   final Function(String reason) onSkipped;
-  final Function(DateTime newTime) onPostponed;
+  final Function(DateTime newTime, AppLocalizations l10n) onPostponed;
 
   @override
   State<IntakeConfirmationDialog> createState() =>
@@ -170,7 +170,7 @@ class _IntakeConfirmationDialogState extends State<IntakeConfirmationDialog> {
             ElevatedButton(
               onPressed: selectedTime != null
                   ? () {
-                widget.onPostponed(selectedTime!);
+                widget.onPostponed(selectedTime!, l10n);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               }
@@ -193,7 +193,7 @@ class _IntakeConfirmationDialogState extends State<IntakeConfirmationDialog> {
           ElevatedButton(
             onPressed: () {
               // Reset to scheduled status by calling onPostponed with original time
-              widget.onPostponed(widget.record.scheduledTime);
+              widget.onPostponed(widget.record.scheduledTime, l10n);
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },

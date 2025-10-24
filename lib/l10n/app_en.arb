@@ -917,5 +917,13 @@
   "december": "December",
   "@december": {
     "description": "December month name"
+  },
+  "noScheduleForMedication": "No schedule found for this medication",
+  "@noScheduleForMedication": {
+    "description": "Error when medication has no schedule"
+  },
+  "medicationSkipped": "Medication skipped",
+  "@medicationSkipped": {
+    "description": "Medication skipped message"
   }
 }
