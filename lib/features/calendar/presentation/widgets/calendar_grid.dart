@@ -152,6 +152,7 @@ class CalendarGrid extends StatelessWidget {
     }
 
     return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 80), // Space for FAB
       itemCount: medications.length,
       itemBuilder: (context, medicationIndex) {
         final medication = medications[medicationIndex];
