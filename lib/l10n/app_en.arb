@@ -967,7 +967,7 @@
   "medicationSkipped": "Medication skipped",
   "@medicationSkipped": {
     "description": "Medication skipped message"
-  }
+  },
   "intakeMissed": "Intake missed",
   "@intakeMissed": {
     "description": "Intake missed message"

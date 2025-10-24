@@ -116,7 +116,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return date.subtract(Duration(days: weekday - 1));
   }
 
-  DateTime _getWeekEndDate(DateTime date) => _getWeekStartDate(date).add(const Duration(days: 6));
+  DateTime _getWeekEndDate(DateTime date) => _getWeekStartDate(date).add(const Duration(days: 7));
 
   void _showIntakeConfirmationDialog(IntakeRecord record, AppLocalizations l10n) {
     showDialog(
@@ -175,10 +175,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             id: const Uuid().v4(),
             medicationId: medication.id,
             scheduledTime: scheduledTime,
-            actualTime: null,
             status: IntakeStatusDto.scheduled,
-            skipReason: null,
-            pillsCount: 1,
             createdAt: DateTime.now(),
           ),
           onTaken: () async {
@@ -190,7 +187,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 scheduledTime: scheduledTime,
                 actualTime: DateTime.now(),
                 status: IntakeStatusDto.taken,
-                skipReason: null,
                 pillsCount: 1,
                 createdAt: DateTime.now(),
               );
@@ -226,7 +222,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 id: const Uuid().v4(),
                 medicationId: medication.id,
                 scheduledTime: scheduledTime,
-                actualTime: null,
                 status: IntakeStatusDto.skipped,
                 skipReason: reason,
                 pillsCount: 0,
@@ -429,6 +424,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   Future<void> _markAsMissed(IntakeRecord record, AppLocalizations l10n) async {
     final updatedRecord = record.copyWith(
       status: IntakeStatusDto.missed,
+      pillsCount: 0,
     );
 
     final repository = ref.read(intakeRecordRepositoryProvider);

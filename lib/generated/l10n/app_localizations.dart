@@ -1257,6 +1257,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Medication skipped'**
   String get medicationSkipped;
+
+  /// Intake missed message
+  ///
+  /// In en, this message translates to:
+  /// **'Intake missed'**
+  String get intakeMissed;
 }
 
 class _AppLocalizationsDelegate

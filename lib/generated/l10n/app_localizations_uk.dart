@@ -606,4 +606,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get medicationSkipped => 'Медикамент пропущено';
+
+  @override
+  String get intakeMissed => 'Прийом пропущено';
 }

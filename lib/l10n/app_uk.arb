@@ -233,6 +233,6 @@
   "december": "Грудень",
   "noScheduleForMedication": "Не знайдено розклад для цього медикаменту",
   "medicationSkipped": "Медикамент пропущено",
-  "intakePostponed": "Прийом відкладено"
-  "intakeMissed": "Прийом пропущено",
+  "intakePostponed": "Прийом відкладено",
+  "intakeMissed": "Прийом пропущено"
 }

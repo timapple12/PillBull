@@ -614,4 +614,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get medicationSkipped => 'Medikament übersprungen';
+
+  @override
+  String get intakeMissed => 'Intake missed';
 }
