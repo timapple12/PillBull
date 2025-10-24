@@ -245,6 +245,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String minutesShort(int minutes) {
+    return '$minutes Min';
+  }
+
+  @override
   String get quietHours => 'Ruhezeiten';
 
   @override
@@ -255,6 +260,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get quietHoursEnd => 'Ruhezeiten Ende';
+
+  @override
+  String get testNotification => 'Testbenachrichtigung';
+
+  @override
+  String get test => 'Test';
+
+  @override
+  String get notificationsWorkingCorrectly =>
+      'Benachrichtigungen funktionieren korrekt!';
+
+  @override
+  String get testNotificationSent => 'Testbenachrichtigung gesendet';
+
+  @override
+  String get showScheduled => 'Geplante anzeigen';
+
+  @override
+  String get checkLogsInConsole => 'Protokolle in der Konsole überprüfen';
 
   @override
   String get appearance => 'Erscheinungsbild';

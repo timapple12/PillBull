@@ -556,6 +556,12 @@ abstract class AppLocalizations {
   /// **'{minutes} minutes before intake'**
   String minutesBeforeIntake(int minutes);
 
+  /// Short format for minutes
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String minutesShort(int minutes);
+
   /// Quiet hours setting
   ///
   /// In en, this message translates to:
@@ -579,6 +585,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quiet Hours End'**
   String get quietHoursEnd;
+
+  /// Test notification button
+  ///
+  /// In en, this message translates to:
+  /// **'Test Notification'**
+  String get testNotification;
+
+  /// Test
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get test;
+
+  /// Notifications working message
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are working correctly!'**
+  String get notificationsWorkingCorrectly;
+
+  /// Test notification sent message
+  ///
+  /// In en, this message translates to:
+  /// **'Test notification sent'**
+  String get testNotificationSent;
+
+  /// Show scheduled notifications button
+  ///
+  /// In en, this message translates to:
+  /// **'Show Scheduled'**
+  String get showScheduled;
+
+  /// Check logs message
+  ///
+  /// In en, this message translates to:
+  /// **'Check logs in console'**
+  String get checkLogsInConsole;
 
   /// Appearance section title
   ///

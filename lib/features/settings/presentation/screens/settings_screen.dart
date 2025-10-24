@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_constants.dart';
@@ -28,6 +29,40 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   TimeOfDay _quietHoursStart = const TimeOfDay(hour: 22, minute: 0);
   TimeOfDay _quietHoursEnd = const TimeOfDay(hour: 7, minute: 0);
   int _reminderMinutesBefore = 15;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notificationsEnabled = prefs.getBool('notificationsEnabled') ?? true;
+      _quietHoursEnabled = prefs.getBool('quietHoursEnabled') ?? true;
+      _reminderMinutesBefore = prefs.getInt('reminderMinutesBefore') ?? 15;
+      
+      final quietStartHour = prefs.getInt('quietHoursStartHour') ?? 22;
+      final quietStartMinute = prefs.getInt('quietHoursStartMinute') ?? 0;
+      _quietHoursStart = TimeOfDay(hour: quietStartHour, minute: quietStartMinute);
+      
+      final quietEndHour = prefs.getInt('quietHoursEndHour') ?? 7;
+      final quietEndMinute = prefs.getInt('quietHoursEndMinute') ?? 0;
+      _quietHoursEnd = TimeOfDay(hour: quietEndHour, minute: quietEndMinute);
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notificationsEnabled', _notificationsEnabled);
+    await prefs.setBool('quietHoursEnabled', _quietHoursEnabled);
+    await prefs.setInt('reminderMinutesBefore', _reminderMinutesBefore);
+    await prefs.setInt('quietHoursStartHour', _quietHoursStart.hour);
+    await prefs.setInt('quietHoursStartMinute', _quietHoursStart.minute);
+    await prefs.setInt('quietHoursEndHour', _quietHoursEnd.hour);
+    await prefs.setInt('quietHoursEndMinute', _quietHoursEnd.minute);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +149,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   setState(() {
                     _notificationsEnabled = value;
                   });
+                  _saveSettings();
                 },
               ),
             ),
@@ -122,17 +158,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               subtitle: l10n.minutesBeforeIntake(_reminderMinutesBefore),
               trailing: DropdownButton<int>(
                 value: _reminderMinutesBefore,
-                items: const [
-                  DropdownMenuItem(value: 5, child: Text('5 хв')),
-                  DropdownMenuItem(value: 10, child: Text('10 хв')),
-                  DropdownMenuItem(value: 15, child: Text('15 хв')),
-                  DropdownMenuItem(value: 30, child: Text('30 хв')),
+                items: [
+                  DropdownMenuItem(value: 5, child: Text(l10n.minutesShort(5))),
+                  DropdownMenuItem(value: 10, child: Text(l10n.minutesShort(10))),
+                  DropdownMenuItem(value: 15, child: Text(l10n.minutesShort(15))),
+                  DropdownMenuItem(value: 30, child: Text(l10n.minutesShort(30))),
                 ],
                 onChanged: (value) {
                   if (value != null) {
                     setState(() {
                       _reminderMinutesBefore = value;
                     });
+                    _saveSettings();
                   }
                 },
               ),
@@ -146,6 +183,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   setState(() {
                     _quietHoursEnabled = value;
                   });
+                  _saveSettings();
                 },
               ),
             ),
@@ -162,6 +200,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     setState(() {
                       _quietHoursStart = time;
                     });
+                    _saveSettings();
                   }
                 },
               ),
@@ -177,6 +216,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     setState(() {
                       _quietHoursEnd = time;
                     });
+                    _saveSettings();
                   }
                 },
               ),
@@ -184,19 +224,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const Divider(height: 32),
             ElevatedButton.icon(
               icon: const Icon(Icons.notifications_active),
-              label: const Text('🧪 Тестова нотифікація'),
+              label: Text('🧪 ${l10n.testNotification}'),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
               ),
               onPressed: () async {
                 final notificationService = ref.read(notificationServiceProvider);
                 await notificationService.showImmediateNotification(
-                  title: '🧪 Тест',
-                  body: 'Нотифікації працюють правильно!',
+                  title: '🧪 ${l10n.test}',
+                  body: l10n.notificationsWorkingCorrectly,
                 );
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('✅ Тестова нотифікація відправлена')),
+                    SnackBar(content: Text('✅ ${l10n.testNotificationSent}')),
                   );
                 }
               },
@@ -204,7 +244,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const SizedBox(height: 8),
             OutlinedButton.icon(
               icon: const Icon(Icons.list),
-              label: const Text('📋 Показати заплановані'),
+              label: Text('📋 ${l10n.showScheduled}'),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
               ),
@@ -213,7 +253,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 await notificationService.printAllPendingNotifications();
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('📋 Перевір логи в консолі')),
+                    SnackBar(content: Text('📋 ${l10n.checkLogsInConsole}')),
                   );
                 }
               },

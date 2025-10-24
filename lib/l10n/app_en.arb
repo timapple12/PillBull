@@ -316,6 +316,16 @@
       }
     }
   },
+  "minutesShort": "{minutes} min",
+  "@minutesShort": {
+    "description": "Short format for minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "description": "Number of minutes"
+      }
+    }
+  },
   "quietHours": "Quiet Hours",
   "@quietHours": {
     "description": "Quiet hours setting"
@@ -331,6 +341,30 @@
   "quietHoursEnd": "Quiet Hours End",
   "@quietHoursEnd": {
     "description": "Quiet hours end setting"
+  },
+  "testNotification": "Test Notification",
+  "@testNotification": {
+    "description": "Test notification button"
+  },
+  "test": "Test",
+  "@test": {
+    "description": "Test"
+  },
+  "notificationsWorkingCorrectly": "Notifications are working correctly!",
+  "@notificationsWorkingCorrectly": {
+    "description": "Notifications working message"
+  },
+  "testNotificationSent": "Test notification sent",
+  "@testNotificationSent": {
+    "description": "Test notification sent message"
+  },
+  "showScheduled": "Show Scheduled",
+  "@showScheduled": {
+    "description": "Show scheduled notifications button"
+  },
+  "checkLogsInConsole": "Check logs in console",
+  "@checkLogsInConsole": {
+    "description": "Check logs message"
   },
   "appearance": "Appearance",
   "@appearance": {

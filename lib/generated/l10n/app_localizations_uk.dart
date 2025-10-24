@@ -242,6 +242,11 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String minutesShort(int minutes) {
+    return '$minutes хв';
+  }
+
+  @override
   String get quietHours => 'Тихий час';
 
   @override
@@ -252,6 +257,24 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get quietHoursEnd => 'Кінець тихого часу';
+
+  @override
+  String get testNotification => 'Тестова нотифікація';
+
+  @override
+  String get test => 'Тест';
+
+  @override
+  String get notificationsWorkingCorrectly => 'Нотифікації працюють правильно!';
+
+  @override
+  String get testNotificationSent => 'Тестова нотифікація відправлена';
+
+  @override
+  String get showScheduled => 'Показати заплановані';
+
+  @override
+  String get checkLogsInConsole => 'Перевір логи в консолі';
 
   @override
   String get appearance => 'Зовнішній вигляд';
