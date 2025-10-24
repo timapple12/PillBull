@@ -571,4 +571,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String everyNDays(int n) {
     return 'Alle $n Tage';
   }
+
+  @override
+  String get previousMonth => 'Vorheriger Monat';
+
+  @override
+  String get nextMonth => 'Nächster Monat';
 }

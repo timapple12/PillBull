@@ -207,5 +207,19 @@
   "daily": "Щодня",
   "weekly": "Щотижня",
   "monthly": "Щомісяця",
-  "everyNDays": "Кожні {n} днів"
+  "everyNDays": "Кожні {n} днів",
+  "previousMonth": "Попередній місяць",
+  "nextMonth": "Наступний місяць",
+  "january": "Січень",
+  "february": "Лютий",
+  "march": "Березень",
+  "april": "Квітень",
+  "may": "Травень",
+  "june": "Червень",
+  "july": "Липень",
+  "august": "Серпень",
+  "september": "Вересень",
+  "october": "Жовтень",
+  "november": "Листопад",
+  "december": "Грудень"
 }

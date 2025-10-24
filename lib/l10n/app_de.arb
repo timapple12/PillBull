@@ -205,5 +205,19 @@
   "daily": "Täglich",
   "weekly": "Wöchentlich",
   "monthly": "Monatlich",
-  "everyNDays": "Alle {n} Tage"
+  "everyNDays": "Alle {n} Tage",
+  "previousMonth": "Vorheriger Monat",
+  "nextMonth": "Nächster Monat",
+  "january": "Januar",
+  "february": "Februar",
+  "march": "März",
+  "april": "April",
+  "may": "Mai",
+  "june": "Juni",
+  "july": "Juli",
+  "august": "August",
+  "september": "September",
+  "october": "Oktober",
+  "november": "November",
+  "december": "Dezember"
 }

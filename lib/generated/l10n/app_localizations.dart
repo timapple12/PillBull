@@ -1179,6 +1179,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Every {n} days'**
   String everyNDays(int n);
+
+  /// Previous month tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get previousMonth;
+
+  /// Next month tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get nextMonth;
 }
 
 class _AppLocalizationsDelegate

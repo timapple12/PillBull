@@ -23,7 +23,6 @@ class IntakeConfirmationDialog extends StatefulWidget {
 }
 
 class _IntakeConfirmationDialogState extends State<IntakeConfirmationDialog> {
-  DateTime? _selectedPostponeTime;
 
   @override
   Widget build(BuildContext context) {
@@ -122,61 +121,65 @@ class _IntakeConfirmationDialogState extends State<IntakeConfirmationDialog> {
   }
 
   void _showPostponeDialog(AppLocalizations l10n) {
+    DateTime? selectedTime;
+    
     showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text(l10n.postponeIntake),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.selectNewTime),
-                const SizedBox(height: AppConstants.paddingMedium),
-                ElevatedButton(
-                  onPressed: () async {
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(
-                          widget.record.scheduledTime,),
-                    );
-                    if (time != null) {
-                      final newDateTime = DateTime(
-                        widget.record.scheduledTime.year,
-                        widget.record.scheduledTime.month,
-                        widget.record.scheduledTime.day,
-                        time.hour,
-                        time.minute,
-                      );
-                      setState(() {
-                        _selectedPostponeTime = newDateTime;
-                      });
-                    }
-                  },
-                  child: Text(
-                    _selectedPostponeTime != null
-                        ? AppUtils.formatTime(_selectedPostponeTime!)
-                        : l10n.selectTime,
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.cancel),
-              ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(l10n.postponeIntake),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.selectNewTime),
+              const SizedBox(height: AppConstants.paddingMedium),
               ElevatedButton(
-                onPressed: _selectedPostponeTime != null
-                    ? () {
-                  widget.onPostponed(_selectedPostponeTime!);
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                }
-                    : null,
-                child: Text(l10n.postponeIntake),
+                onPressed: () async {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(
+                      widget.record.scheduledTime,
+                    ),
+                  );
+                  if (time != null) {
+                    final newDateTime = DateTime(
+                      widget.record.scheduledTime.year,
+                      widget.record.scheduledTime.month,
+                      widget.record.scheduledTime.day,
+                      time.hour,
+                      time.minute,
+                    );
+                    setDialogState(() {
+                      selectedTime = newDateTime;
+                    });
+                  }
+                },
+                child: Text(
+                  selectedTime != null
+                      ? AppUtils.formatTime(selectedTime!)
+                      : l10n.selectTime,
+                ),
               ),
             ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancel),
+            ),
+            ElevatedButton(
+              onPressed: selectedTime != null
+                  ? () {
+                widget.onPostponed(selectedTime!);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              }
+                  : null,
+              child: Text(l10n.postponeIntake),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

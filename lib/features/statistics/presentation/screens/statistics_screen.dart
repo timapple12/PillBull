@@ -7,45 +7,186 @@ import '../../../../shared/providers/providers.dart';
 import '../widgets/statistics_chart.dart';
 import '../widgets/adherence_card.dart';
 
-class StatisticsScreen extends ConsumerWidget {
+class StatisticsScreen extends ConsumerStatefulWidget {
   const StatisticsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StatisticsScreen> createState() => _StatisticsScreenState();
+}
+
+class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
+  late DateTime _selectedMonth;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedMonth = DateTime.now();
+  }
+
+  void _goToPreviousMonth() {
+    setState(() {
+      _selectedMonth = DateTime(
+        _selectedMonth.year,
+        _selectedMonth.month - 1,
+      );
+    });
+  }
+
+  void _goToNextMonth() {
+    setState(() {
+      _selectedMonth = DateTime(
+        _selectedMonth.year,
+        _selectedMonth.month + 1,
+      );
+    });
+  }
+
+  void _goToCurrentMonth() {
+    setState(() {
+      _selectedMonth = DateTime.now();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // Calculate date range for selected month
+    final startDate = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
+    final endDate = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0, 23, 59, 59);
+    
     final medicationsAsync = ref.watch(medicationsProvider);
     final intakeRecordsAsync = ref.watch(
-      intakeRecordsForDateRangeProvider(
-        DateTime.now().subtract(const Duration(days: 30)),
-        DateTime.now(),
-      ),
+      intakeRecordsForDateRangeProvider(startDate, endDate),
     );
-
-    final l10n = AppLocalizations.of(context)!;
     
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.statistics),
         centerTitle: true,
       ),
-      body: medicationsAsync.when(
-        data: (medications) => intakeRecordsAsync.when(
-          data: (intakeRecords) => _buildStatisticsContent(
-            context,
-            l10n,
-            medications.map((medication) => medication.toDto()).toList(),
-            intakeRecords.map((intakeRecord) => intakeRecord.toDto()).toList(),
+      body: Column(
+        children: [
+          _buildMonthSelector(l10n),
+          Expanded(
+            child: medicationsAsync.when(
+              data: (medications) => intakeRecordsAsync.when(
+                data: (intakeRecords) => _buildStatisticsContent(
+                  context,
+                  l10n,
+                  medications.map((medication) => medication.toDto()).toList(),
+                  intakeRecords.map((intakeRecord) => intakeRecord.toDto()).toList(),
+                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Text('${l10n.error}: $error'),
+                ),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(
+                child: Text('${l10n.error}: $error'),
+              ),
+            ),
           ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
-            child: Text('${l10n.error}: $error'),
-          ),
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Text('${l10n.error}: $error'),
-        ),
+        ],
       ),
     );
+  }
+
+  Widget _buildMonthSelector(AppLocalizations l10n) {
+    final now = DateTime.now();
+    final isCurrentMonth = _selectedMonth.year == now.year && 
+                          _selectedMonth.month == now.month;
+    final monthName = _getMonthName(_selectedMonth.month, l10n);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppConstants.paddingMedium,
+        vertical: AppConstants.paddingSmall,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: _goToPreviousMonth,
+            tooltip: l10n.previousMonth,
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: isCurrentMonth ? null : _goToCurrentMonth,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppConstants.paddingMedium,
+                  vertical: AppConstants.paddingSmall,
+                ),
+                decoration: BoxDecoration(
+                  color: isCurrentMonth 
+                      ? AppConstants.primaryColor.withValues(alpha: 0.1)
+                      : Colors.grey[100],
+                  borderRadius: BorderRadius.circular(AppConstants.radiusSmall),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$monthName ${_selectedMonth.year}',
+                      style: AppTextStyles.titleMedium.copyWith(
+                        color: isCurrentMonth 
+                            ? AppConstants.primaryColor
+                            : Colors.grey[800],
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    if (!isCurrentMonth) ...[
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.today,
+                        size: 16,
+                        color: Colors.grey[600],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            onPressed: isCurrentMonth ? null : _goToNextMonth,
+            tooltip: l10n.nextMonth,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getMonthName(int month, AppLocalizations l10n) {
+    switch (month) {
+      case 1: return l10n.january;
+      case 2: return l10n.february;
+      case 3: return l10n.march;
+      case 4: return l10n.april;
+      case 5: return l10n.may;
+      case 6: return l10n.june;
+      case 7: return l10n.july;
+      case 8: return l10n.august;
+      case 9: return l10n.september;
+      case 10: return l10n.october;
+      case 11: return l10n.november;
+      case 12: return l10n.december;
+      default: return '';
+    }
   }
 
   Widget _buildStatisticsContent(

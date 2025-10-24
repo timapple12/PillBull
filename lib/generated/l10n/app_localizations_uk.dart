@@ -564,4 +564,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String everyNDays(int n) {
     return 'Кожні $n днів';
   }
+
+  @override
+  String get previousMonth => 'Попередній місяць';
+
+  @override
+  String get nextMonth => 'Наступний місяць';
 }

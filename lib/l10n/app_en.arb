@@ -861,5 +861,61 @@
         "type": "int"
       }
     }
+  },
+  "previousMonth": "Previous month",
+  "@previousMonth": {
+    "description": "Previous month tooltip"
+  },
+  "nextMonth": "Next month",
+  "@nextMonth": {
+    "description": "Next month tooltip"
+  },
+  "january": "January",
+  "@january": {
+    "description": "January month name"
+  },
+  "february": "February",
+  "@february": {
+    "description": "February month name"
+  },
+  "march": "March",
+  "@march": {
+    "description": "March month name"
+  },
+  "april": "April",
+  "@april": {
+    "description": "April month name"
+  },
+  "may": "May",
+  "@may": {
+    "description": "May month name"
+  },
+  "june": "June",
+  "@june": {
+    "description": "June month name"
+  },
+  "july": "July",
+  "@july": {
+    "description": "July month name"
+  },
+  "august": "August",
+  "@august": {
+    "description": "August month name"
+  },
+  "september": "September",
+  "@september": {
+    "description": "September month name"
+  },
+  "october": "October",
+  "@october": {
+    "description": "October month name"
+  },
+  "november": "November",
+  "@november": {
+    "description": "November month name"
+  },
+  "december": "December",
+  "@december": {
+    "description": "December month name"
   }
 }

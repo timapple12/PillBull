@@ -266,9 +266,8 @@ class IntakeRecordRepositoryImpl implements IntakeRecordRepository {
     DateTime endDate,
   ) async {
     final query = _database.select(_database.intakeRecords)
-      ..where((tbl) => 
-          tbl.scheduledTime.isBiggerOrEqualValue(startDate) &
-          tbl.scheduledTime.isSmallerOrEqualValue(endDate),);
+      ..where((tbl) => tbl.scheduledTime.isBiggerOrEqualValue(startDate))
+      ..where((tbl) => tbl.scheduledTime.isSmallerOrEqualValue(endDate));
     final rows = await query.get();
     
     return rows.map((row) => IntakeRecord(

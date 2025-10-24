@@ -566,4 +566,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String everyNDays(int n) {
     return 'Every $n days';
   }
+
+  @override
+  String get previousMonth => 'Previous month';
+
+  @override
+  String get nextMonth => 'Next month';
 }
